@@ -16,7 +16,7 @@ This project relies on the following:
 - React Router
 - Flask
 - SQLAlchemy
-- SQLite3ls
+- SQLite3
 # Initial Setup
 To get the project setup locally, First clone the repo:
 
