@@ -1,6 +1,8 @@
 function Login() {
   return (
-    <div>hello from the login page</div>
+    <div className="text-3xl font-bold">
+      hello from the login page
+    </div>
   )
 }
 

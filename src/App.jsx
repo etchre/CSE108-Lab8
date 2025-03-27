@@ -4,12 +4,11 @@ import Dashboard from "./pages/Dashboard.jsx";
 
 function App() {
   return (
-    <div className="App">
+    <div className="m-4">
       <Routes>
         <Route index element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
-
     </div>
   )
 }

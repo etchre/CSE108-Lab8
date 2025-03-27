@@ -12,6 +12,7 @@ You need these installed in order to set up and run the project:
 ## Dependencies
 This project relies on the following:
 - React 
+- TailwindCSS
 - Vite
 - React Router
 - Flask
