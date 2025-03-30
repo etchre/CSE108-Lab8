@@ -11,7 +11,7 @@ function Dashboard({loggedIn, setLoggedIn}) {
   }, [loggedIn]);
 
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between m-4">
       <div className="text-3xl font-bold">
         hello from the dashboard
       </div>
