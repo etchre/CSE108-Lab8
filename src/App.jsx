@@ -8,7 +8,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   return (
-    <div className="m-4">
+    <div>
       <Routes>
         <Route index element={
           <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
