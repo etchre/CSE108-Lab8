@@ -19,6 +19,7 @@ This project relies on the following:
 - SQLAlchemy
 - SQLite3
 - Werkzeug
+- Flask-JWT-Extended
 # Initial Setup
 To get the project setup locally, First clone the repo:
 
