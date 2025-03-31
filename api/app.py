@@ -106,7 +106,7 @@ def CreateStudentAccount():
               }), 201
 
 #
-@app.route('/students/login', methods=['POST'])
+@app.route('/student/login', methods=['POST'])
 def LoginStudent():
     #get the input if no input is requitrd throw and error
     data = request.get_json()
@@ -122,7 +122,7 @@ def LoginStudent():
     else:
        return jsonify({'error': 'Student not found'}), 404
 
-@app.route('/students/classes', methods=['GET'])
+@app.route('/student/classes', methods=['GET'])
 @jwt_required()
 def getStudentClasses():
     userID = get_jwt_identity()
