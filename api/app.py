@@ -10,6 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 #import toke and time
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_cors import CORS
 
 app = Flask(__name__, template_folder='template')
 #configure the app to work as a database
@@ -18,24 +19,36 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite"
 db = SQLAlchemy(app)
 #change the app to work with jwt and create our totally
 #tubular secret key
-app.config["JWT_SECRET_KEY"] = "bananapudding"
+app.config["JWT_SECRET_KEY"] = "bananapudding" 
 jwt = JWTManager(app)
+CORS(app)
 
-enrollments = db.Table('enrollments',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-    db.Column('class_id', db.Integer, db.ForeignKey('class.id'), primary_key=True)
-)
+# Instead of a simple association table, we now define an Enrollment model 
+# to allow storing a grade for each student's enrollment.
+class Enrollment(db.Model):
+    __tablename__ = 'enrollments'
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    class_id = db.Column(db.Integer, db.ForeignKey('class.id'), primary_key=True)
+    grade = db.Column(db.Integer, nullable=True, default=0)
+    user = db.relationship("User", backref=db.backref("enrollment_assocs", cascade="all, delete-orphan"))
+    class_ = db.relationship("Class", backref=db.backref("enrollment_assocs", cascade="all, delete-orphan"))
+
+    def __init__(self, user_id: int, class_id: int, grade: int = 0):
+       self.user_id = user_id
+       self.class_id = class_id
+       self.grade = grade
 
 #create the database model
 #create for the user
-class User(db.Model):
+class User(db.Model): 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     #here's the username object
     username = db.Column(db.String(100), unique=True, nullable=False)
-    #[]
+    #[] 
     password = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(100), nullable=False)
-    classes = db.relationship('Class', secondary=enrollments, backref=db.backref('users', lazy=True))
+    # Establish a many-to-many relationship via Enrollment
+    classes = db.relationship('Class', secondary='enrollments', backref=db.backref('users', lazy=True))
     #our constructot
     def __init__(self, username, password, role):
          self.username = username
@@ -67,14 +80,13 @@ with app.app_context():
 
 @app.route('/')
 def index():
-    return 'Hello from Flask!'
+    return ""
 
 #create a function so the student can create their account
 @app.route('/student/createaccount', methods=['POST'])
 def CreateStudentAccount():
     #set our data to our
     data = request.get_json()
-
      #If the user does not enter a username or password to create an account
     if not data or 'username' not in data or 'password' not in data:
             return jsonify({'error': 'username and password are required'}), 400
@@ -107,9 +119,7 @@ def LoginStudent():
     if user and check_password_hash(user.password, data['password']):
         Token = create_access_token(identity=user.id)
         return jsonify({"Token": Token}), 200
-        #if not thrown an error
     else:
-    #else give error
        return jsonify({'error': 'Student not found'}), 404
 
 @app.route('/students/classes', methods=['GET'])
@@ -122,12 +132,8 @@ def getStudentClasses():
         return jsonify({'error': 'Student not found'}), 404
 
     #look for the student
-    if user:
-        classesList = [{"id": c.id, "name": c.name, "capacity": c.capacity, "numStudents": c.numStudents, "teacher": c.teacher, "Time": c.Time} for c in user.classes]
-        return jsonify({"id": user.id, "username": user.username, "classes": classesList}), 200
-    else:
-            #else give error
-            return jsonify({'error': 'Student not found'}), 404
+    classesList = [{"id": c.id, "name": c.name, "capacity": c.capacity, "numStudents": c.numStudents, "teacher": c.teacher, "Time": c.Time} for c in user.classes]
+    return jsonify({"id": user.id, "username": user.username, "classes": classesList}), 200
 
 @app.route('/student/enroll', methods=['POST'])
 @jwt_required()
@@ -153,8 +159,13 @@ def enrollInClass():
     if classStatus.numStudents >= classStatus.capacity:
         return jsonify({'error': 'Class is full'}), 400
 
-    #if not enroll the student in the class
+    #if not, enroll the student in the class
     user.classes.append(classStatus)
+    #create an Enrollment record with no grade initially
+    enrollment = Enrollment.query.filter_by(user_id=user.id, class_id=classStatus.id).first()
+    if not enrollment:
+        enrollment = Enrollment(user_id=user.id, class_id=classStatus.id, grade=0)
+        db.session.add(enrollment)
     #and increment the enrollment count
     classStatus.numStudents += 1
     #commit to database
@@ -182,7 +193,11 @@ def unenrollClass():
     if classStatus not in user.classes:
         return jsonify({'error': 'Student is not enrolled in the class'}), 400
 
-    #uneroll the student by remving it from the student's list and decrement the enrollment count
+    #remove the enrollment record
+    enrollment = Enrollment.query.filter_by(user_id=user.id, class_id=classStatus.id).first()
+    if enrollment:
+        db.session.delete(enrollment)
+    #uneroll the student by removing it from the student's list and decrement the enrollment count
     user.classes.remove(classStatus)
     if classStatus.numStudents > 0:
         classStatus.numStudents -= 1
@@ -196,8 +211,132 @@ def unenrollClass():
 def seaAllClasses():
     allClasses = Class.query.all()
     classes = [{"id": c.id, "name": c.name, "capacity": c.capacity, "numStudents": c.numStudents, "teacher": c.teacher, "Time": c.Time} for c in allClasses]
-
     return jsonify(classes)
+
+#This is where the teacher part of the api is/will go
+#create a function so the teacher can create their account
+@app.route('/teacher/createaccount', methods=['POST'])
+def CreateTeacherAccount():
+    #set our data to our
+    data = request.get_json()
+     #If the user does not enter a username or password to create an account
+    if not data or 'username' not in data or 'password' not in data:
+            return jsonify({'error': 'username and password are required'}), 400
+
+    new_user = User(username=data['username'], password=data['password'], role="teacher")
+
+    try:
+       db.session.add(new_user)
+       db.session.commit()
+    except IntegrityError:
+       db.session.rollback()
+       return jsonify({'error': 'That teacher name already exists'}), 400
+    return jsonify({
+                  'id': new_user.id,
+                  'username': new_user.username,
+                  'role': new_user.role
+              }), 201
+
+#create a login for the teacher
+@app.route('/teacher/login', methods=['POST'])
+def LoginTeacher():
+    #get the input if no input is requitrd throw and error
+    data = request.get_json()
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({'error': 'username and password are required'}), 400
+
+    #get the user by username
+    user = User.query.filter_by(username=data['username'], role="teacher").first()
+    #check if the username and password is correct , if it is login
+    if user and check_password_hash(user.password, data['password']):
+        Token = create_access_token(identity=user.id)
+        return jsonify({"Token": Token}), 200
+    else:
+       return jsonify({'error': 'Teacher not found'}), 404
+
+#get all classes associated with the teacher
+@app.route('/teacher/classes', methods=['GET'])
+@jwt_required()
+def getTeacherClasses():
+    userID = get_jwt_identity()
+    teacher = User.query.get(userID)
+    #throw an error if user not found
+    if not teacher or teacher.role != "teacher":
+        return jsonify({'error': 'Teacher not found'}), 404
+
+    #get classes where the teacher field matches the teacher's username
+    classesList = [{"id": c.id, "name": c.name, "teacher": c.teacher, "Time": c.Time, "students": c.numStudents} for c in Class.query.filter_by(teacher=teacher.username).all()]
+    return jsonify({"id": teacher.id, "username": teacher.username, "classes": classesList}), 200
+
+#get all students and grades for a particular class
+@app.route('/teacher/class/<class_id>/students', methods=['GET'])
+@jwt_required()
+def getTeacherClassInfo(class_id):
+    userID = get_jwt_identity()
+    teacher = User.query.get(userID)
+    #throw an error if user not found
+    if not teacher or teacher.role != "teacher":
+        return jsonify({'error': 'Teacher not found'}), 404
+
+    specificClass = Class.query.get(class_id)
+    if not specificClass:
+        return jsonify({'error': 'Class not found'}), 404
+
+    # Ensure that the teacher is assigned to this class
+    if specificClass.teacher != teacher.username:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    # Get enrolled students with their grades from the Enrollment model
+    teacherClassInfo = []
+    for enrollment in specificClass.enrollment_assocs:
+            student = User.query.get(enrollment.user_id)
+            if not student:
+                continue
+
+            teacherClassInfo.append({
+                "student_id": student.id,
+                "username": student.username,
+                "grade": enrollment.grade
+            })
+    return jsonify({"class_id": specificClass.id, "class_name": specificClass.name, "students": teacherClassInfo}), 200
+
+#now create a function that changes a student's grade
+@app.route('/teacher/grade', methods=['PUT'])
+@jwt_required()
+def changeStudentGrade():
+    userID = get_jwt_identity()
+    teacher = User.query.get(userID)
+    #throw an error if user not found
+    if not teacher or teacher.role != "teacher":
+        return jsonify({'error': 'Teacher not found'}), 404
+    data = request.get_json()
+    #if no grade entered return error; require classId, student (username), and grade
+    if not data or 'classId' not in data or 'student' not in data or 'grade' not in data:
+        return jsonify({'error': 'classId, student, and grade are required'}), 400
+
+    class_obj = Class.query.get(data['classId'])
+    if not class_obj:
+        return jsonify({'error': 'Class not found'}), 404
+    # ensure the teacher is assigned to the class
+    if class_obj.teacher != teacher.username:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    student = User.query.filter_by(username=data['student'], role="student").first()
+    if not student:
+        return jsonify({'error': 'Student not found'}), 404
+
+    enrollment = Enrollment.query.filter_by(user_id=student.id, class_id=class_obj.id).first()
+    if not enrollment:
+        return jsonify({'error': 'Enrollment not found'}), 404
+
+    enrollment.grade = data['grade']
+    db.session.commit()    
+    return jsonify({
+          'student_id': student.id,
+          'username': student.username,
+          'class_id': class_obj.id,
+          'grade': enrollment.grade
+      }), 200
 
 if __name__ == '__main__':
   app.run(host='0.0.0.0', port=5000)
