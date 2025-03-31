@@ -20,6 +20,7 @@ This project relies on the following:
 - SQLite3
 - Werkzeug
 - Flask-JWT-Extended
+- Flask-Cors
 # Initial Setup
 To get the project setup locally, First clone the repo:
 
