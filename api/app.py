@@ -29,7 +29,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite"
 #create the database
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
-CORS(app)
+cors = CORS(app, origins="*")
 
 # Instead of a simple association table, we now define an Enrollment model 
 # to allow storing a grade for each student's enrollment.
