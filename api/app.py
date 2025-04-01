@@ -12,14 +12,22 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
 
-app = Flask(__name__, template_folder='template')
-#configure the app to work as a database
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite"
-#create the database
-db = SQLAlchemy(app)
+app = Flask(__name__)
+
 #change the app to work with jwt and create our totally
 #tubular secret key
-app.config["JWT_SECRET_KEY"] = "bananapudding" 
+app.config["JWT_SECRET_KEY"] = "bananapudding"
+# Here you can globally configure all the ways you want to allow JWTs to
+# be sent to your web application. By default, this will be only headers.
+app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies", "json", "query_string"]
+# If true this will only allow the cookies that contain your JWTs to be sent
+# over https. In production, this should always be set to True
+app.config["JWT_COOKIE_SECURE"] = False
+#configure the app to work as a database
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite"
+
+#create the database
+db = SQLAlchemy(app)
 jwt = JWTManager(app)
 CORS(app)
 
