@@ -1,14 +1,19 @@
 import {useEffect} from "react";
 import {useNavigate} from "react-router";
+import studentAPI from "../functions/studentAPI.js";
 
-function Dashboard({loggedIn, setLoggedIn}) {
+function Dashboard({loggedIn, setLoggedIn, setResponse, token, courses}) {
   let navigate = useNavigate();
 
   useEffect(() => {
     if(!loggedIn) {
       navigate('/');
+    } else {
+      studentAPI.getClasses({token, setResponse});
     }
-  }, [loggedIn]);
+  }, [loggedIn, token]);
+
+  useEffect(() => {})
 
   return (
     <div className="flex justify-between m-4">
