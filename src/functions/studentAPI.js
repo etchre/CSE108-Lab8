@@ -1,5 +1,4 @@
 const studentURI = 'http://127.0.0.1:5000/student'
-const generalURI = 'http://127.0.0.1:5000/'
 
 function promiseCallback({promise, setResponse}) {
   promise.then(response => {
