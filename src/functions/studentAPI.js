@@ -1,8 +1,21 @@
 const studentURI = 'http://127.0.0.1:5000/student'
 const generalURI = 'http://127.0.0.1:5000/'
 
-function createAccount({username, password}) {
-  fetch(studentURI+'/createaccount',
+function promiseCallback({promise, setResponse}) {
+  promise.then(response => {
+    if (!response.ok) {
+      console.log("Response status: " + response.status + " " + response.statusText);
+    }
+    return response.json();
+  }).then(data => {
+    setResponse(data)
+  }).catch(err => {
+    console.log(err);
+  })
+}
+
+function createAccount({username, password, setResponse}) {
+  const promise = fetch(studentURI+'/createaccount',
     {
       method: 'POST',
       headers: {
@@ -15,20 +28,13 @@ function createAccount({username, password}) {
         }
       )
     }
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    console.log(data);
-  }).catch(err => {
-    console.log(err);
-  })
+  )
+
+  promiseCallback({promise, setResponse})
 }
 
-function login({username, password}) {
-  fetch(studentURI+'/login',
+function login({username, password, setResponse}) {
+  const promise = fetch(studentURI+'/login',
     {
       method: 'POST',
       headers: {
@@ -41,40 +47,26 @@ function login({username, password}) {
         }
       )
     }
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    console.log(data);
-  }).catch(err => {
-    console.log(err);
-  })
+  )
+
+  promiseCallback({promise, setResponse})
 }
 
-function getClasses({token}) {
-  fetch(studentURI+'/classes',
+function getClasses({token, setResponse}) {
+  const promise = fetch(studentURI+'/classes',
     {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,
       }
     }
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    console.log(data);
-  }).catch(err => {
-    console.log(err);
-  })
+  )
+
+  promiseCallback({promise, setResponse})
 }
 
 function enroll({token, classId}) {
-  fetch(studentURI+'/enroll',
+  const promise = fetch(studentURI+'/enroll',
     {
       method: 'POST',
       headers: {
@@ -86,20 +78,13 @@ function enroll({token, classId}) {
         }
       )
     }
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    console.log(data);
-  }).catch(err => {
-    console.log(err);
-  })
+  )
+
+  promiseCallback(promise)
 }
 
 function unenroll({token, classId}) {
-  fetch(studentURI+'/unenroll',
+  const promise = fetch(studentURI+'/unenroll',
     {
       method: 'POST',
       headers: {
@@ -111,16 +96,9 @@ function unenroll({token, classId}) {
         }
       )
     }
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    console.log(data);
-  }).catch(err => {
-    console.log(err);
-  })
+  )
+
+  promiseCallback(promise)
 }
 
 export default {createAccount, login, getClasses, enroll, unenroll};
