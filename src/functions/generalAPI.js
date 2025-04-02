@@ -23,4 +23,4 @@ function seeAllCourses({setResponse}) {
   promiseCallback({promise, setResponse})
 }
 
-export default {seeAllCourses}
+export default {seeAllCourses, promiseCallback}

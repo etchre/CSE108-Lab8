@@ -1,17 +1,6 @@
-const studentURI = 'http://127.0.0.1:5000/student'
+import generalAPI from "./generalAPI.js";
 
-function promiseCallback({promise, setResponse}) {
-  promise.then(response => {
-    if (!response.ok) {
-      console.log("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    setResponse(data)
-  }).catch(err => {
-    console.log(err);
-  })
-}
+const studentURI = 'http://127.0.0.1:5000/student'
 
 function createAccount({username, password, setResponse}) {
   const promise = fetch(studentURI+'/createaccount',
@@ -29,7 +18,7 @@ function createAccount({username, password, setResponse}) {
     }
   )
 
-  promiseCallback({promise, setResponse})
+  generalAPI.promiseCallback({promise, setResponse})
 }
 
 function login({username, password, setResponse}) {
@@ -48,7 +37,7 @@ function login({username, password, setResponse}) {
     }
   )
 
-  promiseCallback({promise, setResponse})
+  generalAPI.promiseCallback({promise, setResponse})
 }
 
 function getClasses({token, setResponse}) {
@@ -61,7 +50,7 @@ function getClasses({token, setResponse}) {
     }
   )
 
-  promiseCallback({promise, setResponse})
+  generalAPI.promiseCallback({promise, setResponse})
 }
 
 function enroll({token, classId, setResponse}) {
@@ -80,7 +69,7 @@ function enroll({token, classId, setResponse}) {
     }
   )
 
-  promiseCallback({promise, setResponse})
+  generalAPI.promiseCallback({promise, setResponse})
 }
 
 function unenroll({token, classId, setResponse}) {
@@ -99,7 +88,7 @@ function unenroll({token, classId, setResponse}) {
     }
   )
 
-  promiseCallback({promise, setResponse})
+  generalAPI.promiseCallback({promise, setResponse})
 }
 
 export default {createAccount, login, getClasses, enroll, unenroll};
