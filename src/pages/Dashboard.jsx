@@ -1,8 +1,17 @@
 import {useEffect} from "react";
 import {useNavigate} from "react-router";
 import studentAPI from "../functions/studentAPI.js";
+import DashboardHeader from "../components/dashboard/DashboardHeader.jsx";
+import CourseView from "../components/dashboard/CourseView.jsx";
 
-function Dashboard({loggedIn, setLoggedIn, setResponse, token, courses}) {
+function Dashboard({
+    loggedIn,
+    setLoggedIn,
+    setResponse,
+    token,
+    courses,
+    user
+}) {
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -16,15 +25,9 @@ function Dashboard({loggedIn, setLoggedIn, setResponse, token, courses}) {
   useEffect(() => {})
 
   return (
-    <div className="flex justify-between m-4">
-      <div className="text-3xl font-bold">
-        hello from the dashboard
-      </div>
-      <button className="p-2 border-2 rounded-lg" onClick={() => {
-        setLoggedIn(false);
-      }}>
-        Log out
-      </button>
+    <div>
+      <DashboardHeader user={user} setLoggedIn={setLoggedIn} />
+      <CourseView courses={courses} />
     </div>
   )
 }

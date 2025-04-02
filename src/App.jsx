@@ -8,10 +8,13 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [response, setResponse] = useState({});
   const [token, setToken] = useState('');
+
+  //user state
   const [courses, setCourses] = useState({});
+  const [user, setUser] = useState('');
 
   useEffect(() => {
-    //console.log(response)
+    console.log(response)
 
     if(response['Token'] !== undefined) {
       setToken(response['Token'])
@@ -20,17 +23,18 @@ function App() {
     if(response['classes'] !== undefined) {
       setCourses(response['classes'])
     }
+    if(response['username'] !== undefined) {
+      setUser(response['username'])
+    }
   }, [response]);
 
   useEffect(() => {
     if(!loggedIn) {
       setToken('')
+      setUser('')
+      setCourses({})
     }
   }, [loggedIn])
-
-  useEffect(() => {
-    console.log(token)
-  }, [token])
 
   return (
     <div>
@@ -48,8 +52,9 @@ function App() {
             setResponse={setResponse}
             token={token}
             courses={courses}
+            user={user}
           />
-        }/>
+        } />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
