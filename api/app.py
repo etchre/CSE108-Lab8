@@ -125,7 +125,7 @@ def LoginStudent():
     user = User.query.filter_by(username=data['username'], role="student").first()
     #check if the username and password is correct , if it is login
     if user and check_password_hash(user.password, data['password']):
-        Token = create_access_token(str(identity=user.id))
+        Token = create_access_token(identity=str(user.id))
         return jsonify({"Token": Token}), 200
     else:
        return jsonify({'error': 'Student not found'}), 404
@@ -257,7 +257,7 @@ def LoginTeacher():
     user = User.query.filter_by(username=data['username'], role="teacher").first()
     #check if the username and password is correct , if it is login
     if user and check_password_hash(user.password, data['password']):
-        Token = create_access_token(str(identity=user.id))
+        Token = create_access_token(identity=str(user.id))
         return jsonify({"Token": Token}), 200
     else:
        return jsonify({'error': 'Teacher not found'}), 404
