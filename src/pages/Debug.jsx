@@ -5,10 +5,23 @@ import {useEffect, useState} from "react";
 function Debug(){
 
   const [token, setToken] = useState("");
+  const [response, setResponse] = useState({});
 
   useEffect(()=>{
     console.log(token);
-  }, [])
+  }, [token])
+
+  useEffect(()=>{
+    if(response['Token'] !== undefined){
+      console.log('received token');
+      setToken(response['Token']);
+    }
+    if(response['error'] !== undefined){
+      console.log(response['error']);
+    }
+    //console.log(response);
+
+  }, [response]);
 
   const hello = () => {
     console.log("hello");
@@ -18,21 +31,22 @@ function Debug(){
     const username = "test"
     const password = "12345678"
 
-    studentAPI.createAccount({username, password})
+    studentAPI.createAccount({username, password, setResponse});
   }
 
   const loginTestAccount = () => {
     const username = "test"
     const password = "12345678"
 
-    studentAPI.login({username, password})
+    studentAPI.login({username, password, setResponse})
   }
 
   const getClassesWithToken = () => {
-    studentAPI.getClasses({token})
+    console.log(token)
+    studentAPI.getClasses({token, setResponse})
   }
 
-  const enrollInTestClass = () => {
+  const enrollInTestClass = (user_token) => {
     const classId = 0
 
     studentAPI.enroll({token, classId})
@@ -55,7 +69,7 @@ function Debug(){
   return(
     <div className="m-4">
 
-      <ButtonRow color="bg-amber-300" functions={studentFunctions} />
+      <ButtonRow color="bg-amber-300" functions={studentFunctions}/>
 
     </div>
   )
