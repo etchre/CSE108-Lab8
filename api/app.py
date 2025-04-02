@@ -60,7 +60,7 @@ class User(db.Model):
     #our constructot
     def __init__(self, username, password, role):
          self.username = username
-         self.password = generate_password_hash(password, method='sha256')
+         self.password = generate_password_hash(password)
          self.role  = role
 
 #create for the class
@@ -125,7 +125,7 @@ def LoginStudent():
     user = User.query.filter_by(username=data['username'], role="student").first()
     #check if the username and password is correct , if it is login
     if user and check_password_hash(user.password, data['password']):
-        Token = create_access_token(identity=user.id)
+        Token = create_access_token(str(identity=user.id))
         return jsonify({"Token": Token}), 200
     else:
        return jsonify({'error': 'Student not found'}), 404
@@ -133,7 +133,7 @@ def LoginStudent():
 @app.route('/student/classes', methods=['GET'])
 @jwt_required()
 def getStudentClasses():
-    userID = get_jwt_identity()
+    userID = int(get_jwt_identity())
     user = User.query.get(userID)
     #throw an error if user not found
     if not user:
@@ -257,7 +257,7 @@ def LoginTeacher():
     user = User.query.filter_by(username=data['username'], role="teacher").first()
     #check if the username and password is correct , if it is login
     if user and check_password_hash(user.password, data['password']):
-        Token = create_access_token(identity=user.id)
+        Token = create_access_token(str(identity=user.id))
         return jsonify({"Token": Token}), 200
     else:
        return jsonify({'error': 'Teacher not found'}), 404
@@ -266,7 +266,7 @@ def LoginTeacher():
 @app.route('/teacher/classes', methods=['GET'])
 @jwt_required()
 def getTeacherClasses():
-    userID = get_jwt_identity()
+    userID = int(get_jwt_identity())
     teacher = User.query.get(userID)
     #throw an error if user not found
     if not teacher or teacher.role != "teacher":
