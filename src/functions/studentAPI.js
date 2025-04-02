@@ -64,12 +64,13 @@ function getClasses({token, setResponse}) {
   promiseCallback({promise, setResponse})
 }
 
-function enroll({token, classId}) {
+function enroll({token, classId, setResponse}) {
   const promise = fetch(studentURI+'/enroll',
     {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(
         {
@@ -79,15 +80,16 @@ function enroll({token, classId}) {
     }
   )
 
-  promiseCallback(promise)
+  promiseCallback({promise, setResponse})
 }
 
-function unenroll({token, classId}) {
+function unenroll({token, classId, setResponse}) {
   const promise = fetch(studentURI+'/unenroll',
     {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(
         {
@@ -97,7 +99,7 @@ function unenroll({token, classId}) {
     }
   )
 
-  promiseCallback(promise)
+  promiseCallback({promise, setResponse})
 }
 
 export default {createAccount, login, getClasses, enroll, unenroll};
