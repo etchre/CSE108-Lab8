@@ -219,7 +219,7 @@ def unenrollClass():
 def seaAllClasses():
     allClasses = Class.query.all()
     classes = [{"id": c.id, "name": c.name, "capacity": c.capacity, "numStudents": c.numStudents, "teacher": c.teacher, "Time": c.Time} for c in allClasses]
-    return jsonify(classes)
+    return jsonify({'classes': classes})
 
 #This is where the teacher part of the api is/will go
 #create a function so the teacher can create their account
