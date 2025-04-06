@@ -1,8 +1,10 @@
 import {useEffect} from "react";
 import {useNavigate} from "react-router";
 import studentAPI from "../functions/studentAPI.js";
+import generalAPI from "../functions/generalAPI.js";
 import DashboardHeader from "../components/dashboard/DashboardHeader.jsx";
 import CourseView from "../components/dashboard/CourseView.jsx";
+
 
 function Dashboard({
     loggedIn,
@@ -19,8 +21,13 @@ function Dashboard({
       navigate('/');
     } else {
       studentAPI.getClasses({token, setResponse});
+      //generalAPI.seeAllCourses({setResponse})
     }
   }, [loggedIn, token]);
+
+  useEffect(() => {
+    console.log(courses)
+  }, [courses])
 
   useEffect(() => {})
 

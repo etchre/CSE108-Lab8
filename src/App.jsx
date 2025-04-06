@@ -10,7 +10,7 @@ function App() {
   const [token, setToken] = useState('');
 
   //user state
-  const [courses, setCourses] = useState({});
+  const [courses, setCourses] = useState([]);
   const [user, setUser] = useState('');
 
   useEffect(() => {
@@ -32,7 +32,7 @@ function App() {
     if(!loggedIn) {
       setToken('')
       setUser('')
-      setCourses({})
+      setCourses([])
     }
   }, [loggedIn])
 
