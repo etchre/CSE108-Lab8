@@ -15,8 +15,8 @@ function Debug(){
   }
 
   const createTestAccount = () => {
-    const username = "test"
-    const password = "12345678"
+    const username = "hawaii"
+    const password = "pineapple"
 
     studentAPI.createAccount({username, password})
   }
