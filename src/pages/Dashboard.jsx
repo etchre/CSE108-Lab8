@@ -2,8 +2,13 @@ import {useEffect} from "react";
 import {useNavigate} from "react-router";
 import studentAPI from "../functions/studentAPI.js";
 import generalAPI from "../functions/generalAPI.js";
+
 import DashboardHeader from "../components/dashboard/DashboardHeader.jsx";
 import CourseView from "../components/dashboard/CourseView.jsx";
+import Student from "./dashboard/Student.jsx";
+import Teacher from "./dashboard/Teacher.jsx";
+import teacher from "./dashboard/Teacher.jsx";
+import teacherAPI from "../functions/teacherAPI.js";
 
 function Dashboard({
     loggedIn,
@@ -11,7 +16,8 @@ function Dashboard({
     setResponse,
     token,
     courses,
-    user
+    user,
+    role
 }) {
   let navigate = useNavigate();
 
@@ -19,7 +25,12 @@ function Dashboard({
     if(!loggedIn) {
       navigate('/');
     } else {
-      studentAPI.getClasses({token, setResponse});
+      if(role === 'student') {
+        studentAPI.getClasses({token, setResponse});
+      } else {
+        teacherAPI.getClasses({token, setResponse});
+      }
+
       //generalAPI.seeAllCourses({setResponse})
     }
   }, [loggedIn, token]);
@@ -28,12 +39,21 @@ function Dashboard({
     console.log(courses)
   }, [courses])
 
-  useEffect(() => {})
 
   return (
     <div>
       <DashboardHeader user={user} setLoggedIn={setLoggedIn} />
-      <CourseView courses={courses} token={token} setResponse={setResponse} />
+      {(() => {
+        if (role === 'student') {
+          return <Student token={token} courses={courses} setResponse={setResponse} />;
+        } else if (role === 'teacher') {
+          return <Teacher token={token} courses={courses} setResponse={setResponse} />
+        } else {
+          return (
+            <div>error</div>
+          )
+        }
+      })()}
     </div>
   )
 }

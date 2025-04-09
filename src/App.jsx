@@ -61,6 +61,7 @@ function App() {
             token={token}
             courses={courses}
             user={user}
+            role={role}
           />
         } />
         <Route path="*" element={<NotFound />} />

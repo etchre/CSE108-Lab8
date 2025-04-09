@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import studentAPI from "../functions/studentAPI.js";
+import generalAPI from "../functions/generalAPI.js";
+import teacherAPI from "../functions/teacherAPI.js";
 
 
 function Login({ loggedIn, setResponse }) {
@@ -26,7 +28,7 @@ function Login({ loggedIn, setResponse }) {
   }, [loggedIn, navigate]);
 
   const handleLogin = () => {
-    studentAPI.login({
+    generalAPI.login({
       username: loginUsername,
       password: loginPassword,
       setResponse
@@ -35,11 +37,21 @@ function Login({ loggedIn, setResponse }) {
 
   const handleAccountCreation = () => {
     console.log("Creating account with:", newUsername, newPassword, "Role:", selectedRole);
-    studentAPI.createAccount({
-      username: newUsername,
-      password: newPassword,
-      setResponse
-    });
+    if(selectedRole === 'student') {
+      studentAPI.createAccount({
+        username: newUsername,
+        password: newPassword,
+        setResponse
+      });
+    } else if(selectedRole === 'teacher') {
+      teacherAPI.createAccount({
+        username: newUsername,
+        password: newPassword,
+        setResponse
+      });
+    } else if (selectedRole === 'admin') {
+      console.log('error');
+    }
 
     setSelectedRole(null)
     setIsLoginView(true);

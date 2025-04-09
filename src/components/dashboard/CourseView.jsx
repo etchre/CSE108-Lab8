@@ -5,7 +5,6 @@ import CourseHeader from "./CourseHeader.jsx";
 import ViewSelector from "./ViewSelector.jsx";
 
 function CourseView({courses, token, setResponse}) {
-
   useEffect(() => {
     console.log(courses);
   }, [courses])
