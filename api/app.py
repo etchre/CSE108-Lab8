@@ -103,9 +103,7 @@ def Login():
     user = User.query.filter_by(username=data['username']).first()
     #check if the username and password is correct , if it is login
     if user and check_password_hash(user.password, data['password']):
-        Token = create_access_token(identity=user.id)
-
-
+        Token = create_access_token(identity=str(user.id))
         return jsonify({"Token": Token,"role":user.role}), 200
     else:
        return jsonify({'error': 'user not found'}), 404
@@ -131,9 +129,6 @@ def CreateStudentAccount():
                   'username': new_user.username,
                   'role': new_user.role
               }), 201
-
-#
-
 
 @app.route('/student/classes', methods=['GET'])
 @jwt_required()
