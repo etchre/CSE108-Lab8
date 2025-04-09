@@ -16,6 +16,8 @@ function Login({ loggedIn, setResponse }) {
   const [newUsername, setNewUsername] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
+  const [selectedRole, setSelectedRole] = useState(null);
+
   useEffect(() => {
     // if user already exists; redirect to dashboard
     if (loggedIn) {
@@ -32,7 +34,6 @@ function Login({ loggedIn, setResponse }) {
   };
 
   const handleAccountCreation = () => {
-    let selectedRole = "none"
     console.log("Creating account with:", newUsername, newPassword, "Role:", selectedRole);
     studentAPI.createAccount({
       username: newUsername,
@@ -40,6 +41,7 @@ function Login({ loggedIn, setResponse }) {
       setResponse
     });
 
+    setSelectedRole(null)
     setIsLoginView(true);
   };
 
