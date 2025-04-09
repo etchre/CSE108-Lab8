@@ -13,6 +13,25 @@ function promiseCallback({promise, setResponse}) {
   })
 }
 
+function login({username, password, setResponse}) {
+  const promise = fetch(generalURI+'/login',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(
+        {
+          username: username,
+          password: password
+        }
+      )
+    }
+  )
+
+  promiseCallback({promise, setResponse})
+}
+
 function seeAllCourses({setResponse}) {
   const promise = fetch(generalURI+'/classes',
     {
@@ -23,4 +42,4 @@ function seeAllCourses({setResponse}) {
   promiseCallback({promise, setResponse})
 }
 
-export default {seeAllCourses, promiseCallback}
+export default {seeAllCourses, promiseCallback, login}

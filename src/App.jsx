@@ -7,18 +7,19 @@ import NotFound from "./pages/NotFound.jsx";
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [response, setResponse] = useState({});
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState(null);
 
   //user state
   const [courses, setCourses] = useState([]);
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
     console.log(response)
 
     if(response['Token'] !== undefined) {
       setToken(response['Token'])
-      setLoggedIn(true)
+      setRole(response['role'])
     }
     if(response['classes'] !== undefined) {
       setCourses(response['classes'])
@@ -29,10 +30,17 @@ function App() {
   }, [response]);
 
   useEffect(() => {
+    if(role !== null && token !== null) {
+      setLoggedIn(true)
+    }
+  }, [role, token])
+
+  useEffect(() => {
     if(!loggedIn) {
-      setToken('')
-      setUser('')
+      setToken(null)
+      setUser(null)
       setCourses([])
+      setRole(null)
     }
   }, [loggedIn])
 

@@ -21,25 +21,6 @@ function createAccount({username, password, setResponse}) {
   generalAPI.promiseCallback({promise, setResponse})
 }
 
-function login({username, password, setResponse}) {
-  const promise = fetch(studentURI+'/login',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(
-        {
-          username: username,
-          password: password
-        }
-      )
-    }
-  )
-
-  generalAPI.promiseCallback({promise, setResponse})
-}
-
 function getClasses({token, setResponse}) {
   const promise = fetch(studentURI+'/classes',
     {
@@ -91,4 +72,4 @@ function unenroll({token, classId, setResponse}) {
   generalAPI.promiseCallback({promise, setResponse})
 }
 
-export default {createAccount, login, getClasses, enroll, unenroll};
+export default {createAccount, getClasses, enroll, unenroll};
