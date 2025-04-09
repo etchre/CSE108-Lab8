@@ -71,11 +71,11 @@ function Dashboard({
         </div>
 
         {/** bottom panel for course details */}
-        <div className={`bg-gray-100 absolute left-0 w-full transitiono-all duration-300 ${isBottomPanelOpen ? "h-1/2" : "h-0 overflow-hidden"} bottom-0 border-t border-gray-400`}>
+        <div className={`bg-gray-100 absolute left-0 w-full transition-all duration-300 ${isBottomPanelOpen ? "h-1/2" : "h-0 overflow-hidden"} bottom-0 border-t border-gray-400`}>
           <div className="p-4">
             <h3 className="text-lg font-bold mb-2">Course Details</h3>
             {role === "student" ? (
-              <Student token={token} course={courses} setResponse={setResponse} />
+              <Student token={token} courses={courses} setResponse={setResponse} /> 
             ) : role === "teacher" ? (
               <Teacher token={token} courses={courses} setResponse={setResponse} />
             ) : (
@@ -87,7 +87,5 @@ function Dashboard({
     </div>
   );
 }
-
-
 
 export default Dashboard;
