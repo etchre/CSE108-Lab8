@@ -56,7 +56,8 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     role = db.Column(db.String(100), nullable=False)
     # Establish a many-to-many relationship via Enrollment
-    classes = db.relationship('Class', secondary='enrollments', backref=db.backref('users', lazy=True))
+    classes = db.relationship( 'Class',secondary='enrollments',backref=db.backref('users', lazy=True, overlaps="class_,enrollment_assocs,user"),overlaps="class_,enrollment_assocs,user"
+    )
     #our constructot
     def __init__(self, username, password, role):
          self.username = username
@@ -90,6 +91,24 @@ with app.app_context():
 def index():
     return ""
 
+@app.route('/login', methods=['POST'])
+def Login():
+    #get the JSON data
+    data = request.get_json()
+    #if there is no data or no input  retturn 400 error
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({'error': 'username and password are required'}), 400
+
+    #get the user by username
+    user = User.query.filter_by(username=data['username']).first()
+    #check if the username and password is correct , if it is login
+    if user and check_password_hash(user.password, data['password']):
+        Token = create_access_token(identity=user.id)
+
+
+        return jsonify({"Token": Token,"role":user.role}), 200
+    else:
+       return jsonify({'error': 'user not found'}), 404
 #create a function so the student can create their account
 @app.route('/student/createaccount', methods=['POST'])
 def CreateStudentAccount():
@@ -114,26 +133,12 @@ def CreateStudentAccount():
               }), 201
 
 #
-@app.route('/student/login', methods=['POST'])
-def LoginStudent():
-    #get the input if no input is requitrd throw and error
-    data = request.get_json()
-    if not data or 'username' not in data or 'password' not in data:
-        return jsonify({'error': 'username and password are required'}), 400
 
-    #get the user by username
-    user = User.query.filter_by(username=data['username'], role="student").first()
-    #check if the username and password is correct , if it is login
-    if user and check_password_hash(user.password, data['password']):
-        Token = create_access_token(identity=str(user.id))
-        return jsonify({"Token": Token}), 200
-    else:
-       return jsonify({'error': 'Student not found'}), 404
 
 @app.route('/student/classes', methods=['GET'])
 @jwt_required()
 def getStudentClasses():
-    userID = int(get_jwt_identity())
+    userID = get_jwt_identity()
     user = User.query.get(userID)
     #throw an error if user not found
     if not user:
@@ -245,28 +250,13 @@ def CreateTeacherAccount():
                   'role': new_user.role
               }), 201
 
-#create a login for the teacher
-@app.route('/teacher/login', methods=['POST'])
-def LoginTeacher():
-    #get the input if no input is requitrd throw and error
-    data = request.get_json()
-    if not data or 'username' not in data or 'password' not in data:
-        return jsonify({'error': 'username and password are required'}), 400
 
-    #get the user by username
-    user = User.query.filter_by(username=data['username'], role="teacher").first()
-    #check if the username and password is correct , if it is login
-    if user and check_password_hash(user.password, data['password']):
-        Token = create_access_token(identity=str(user.id))
-        return jsonify({"Token": Token}), 200
-    else:
-       return jsonify({'error': 'Teacher not found'}), 404
 
 #get all classes associated with the teacher
 @app.route('/teacher/classes', methods=['GET'])
 @jwt_required()
 def getTeacherClasses():
-    userID = int(get_jwt_identity())
+    userID = get_jwt_identity()
     teacher = User.query.get(userID)
     #throw an error if user not found
     if not teacher or teacher.role != "teacher":
@@ -338,7 +328,7 @@ def changeStudentGrade():
         return jsonify({'error': 'Enrollment not found'}), 404
 
     enrollment.grade = data['grade']
-    db.session.commit()    
+    db.session.commit()
     return jsonify({
           'student_id': student.id,
           'username': student.username,
@@ -347,4 +337,4 @@ def changeStudentGrade():
       }), 200
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
