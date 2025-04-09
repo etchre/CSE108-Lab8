@@ -5,7 +5,6 @@ import generalAPI from "../functions/generalAPI.js";
 import DashboardHeader from "../components/dashboard/DashboardHeader.jsx";
 import CourseView from "../components/dashboard/CourseView.jsx";
 
-
 function Dashboard({
     loggedIn,
     setLoggedIn,
@@ -34,7 +33,7 @@ function Dashboard({
   return (
     <div>
       <DashboardHeader user={user} setLoggedIn={setLoggedIn} />
-      <CourseView courses={courses} />
+      <CourseView courses={courses} token={token} setResponse={setResponse} />
     </div>
   )
 }

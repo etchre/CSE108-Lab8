@@ -14,7 +14,7 @@ function CourseList({courses}) {
         return(
           <CourseRow
             addons={['']}
-            itemAddons={['bg-gray-500']}
+            itemAddons={['bg-gray-400']}
             key={course['name'] + index}
             items={courseData}
           />

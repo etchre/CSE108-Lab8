@@ -4,7 +4,7 @@ import CourseList from "./CourseList.jsx";
 import CourseHeader from "./CourseHeader.jsx";
 import ViewSelector from "./ViewSelector.jsx";
 
-function CourseView({courses}) {
+function CourseView({courses, token, setResponse}) {
 
   useEffect(() => {
     console.log(courses);
@@ -12,7 +12,7 @@ function CourseView({courses}) {
 
   return (
     <div className="m-4">
-      <ViewSelector />
+      <ViewSelector token={token} setResponse={setResponse} />
       <div className="py-8 px-16 bg-blue-900 rounded-lg">
         <CourseHeader />
         <CourseList courses={courses} />
