@@ -1,14 +1,11 @@
 import {useEffect} from "react";
 import {useNavigate} from "react-router";
 import studentAPI from "../functions/studentAPI.js";
-import generalAPI from "../functions/generalAPI.js";
+import teacherAPI from "../functions/teacherAPI.js";
 
 import DashboardHeader from "../components/dashboard/DashboardHeader.jsx";
-import CourseView from "../components/dashboard/CourseView.jsx";
 import Student from "./dashboard/Student.jsx";
 import Teacher from "./dashboard/Teacher.jsx";
-import teacher from "./dashboard/Teacher.jsx";
-import teacherAPI from "../functions/teacherAPI.js";
 
 function Dashboard({
     loggedIn,

@@ -8,6 +8,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [response, setResponse] = useState({});
   const [token, setToken] = useState(null);
+  const [error, setError] = useState(null);
 
   //user state
   const [courses, setCourses] = useState([]);
@@ -15,7 +16,7 @@ function App() {
   const [role, setRole] = useState(null);
 
   useEffect(() => {
-    console.log(response)
+    //console.log(response)
 
     if(response['Token'] !== undefined) {
       setToken(response['Token'])
@@ -26,6 +27,10 @@ function App() {
     }
     if(response['username'] !== undefined) {
       setUser(response['username'])
+    }
+    if(response['error'] !== undefined) {
+      console.log(response['error'])
+      setError(error)
     }
   }, [response]);
 
