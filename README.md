@@ -21,6 +21,7 @@ This project relies on the following:
 - Werkzeug
 - Flask-JWT-Extended
 - Flask-Cors
+- WTForms 3.1.2
 # Initial Setup
 To get the project setup locally, First clone the repo:
 
