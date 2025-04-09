@@ -258,7 +258,7 @@ def getTeacherClasses():
         return jsonify({'error': 'Teacher not found'}), 404
 
     #get classes where the teacher field matches the teacher's username
-    classesList = [{"id": c.id, "name": c.name, "teacher": c.teacher, "Time": c.Time, "students": c.numStudents} for c in Class.query.filter_by(teacher=teacher.username).all()]
+    classesList = [{"id": c.id, "name": c.name, "capacity": c.capacity, "numStudents": c.numStudents, "teacher": c.teacher, "Time": c.Time} for c in Class.query.filter_by(teacher=teacher.username).all()]
     return jsonify({"id": teacher.id, "username": teacher.username, "classes": classesList}), 200
 
 #get all students and grades for a particular class
