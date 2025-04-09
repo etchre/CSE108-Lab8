@@ -93,7 +93,7 @@ def index():
 
 @app.route('/login', methods=['POST'])
 def Login():
-    #get the JSON data
+    #get the JSON data 
     data = request.get_json()
     #if there is no data or no input  retturn 400 error
     if not data or 'username' not in data or 'password' not in data:
@@ -103,7 +103,9 @@ def Login():
     user = User.query.filter_by(username=data['username']).first()
     #check if the username and password is correct , if it is login
     if user and check_password_hash(user.password, data['password']):
-        Token = create_access_token(identity=str(user.id))
+        Token = create_access_token(identity=user.id)
+
+
         return jsonify({"Token": Token,"role":user.role}), 200
     else:
        return jsonify({'error': 'user not found'}), 404
@@ -129,6 +131,9 @@ def CreateStudentAccount():
                   'username': new_user.username,
                   'role': new_user.role
               }), 201
+
+#
+
 
 @app.route('/student/classes', methods=['GET'])
 @jwt_required()
@@ -219,7 +224,7 @@ def unenrollClass():
 def seaAllClasses():
     allClasses = Class.query.all()
     classes = [{"id": c.id, "name": c.name, "capacity": c.capacity, "numStudents": c.numStudents, "teacher": c.teacher, "Time": c.Time} for c in allClasses]
-    return jsonify({'classes': classes})
+    return jsonify(classes)
 
 #This is where the teacher part of the api is/will go
 #create a function so the teacher can create their account
@@ -258,7 +263,7 @@ def getTeacherClasses():
         return jsonify({'error': 'Teacher not found'}), 404
 
     #get classes where the teacher field matches the teacher's username
-    classesList = [{"id": c.id, "name": c.name, "capacity": c.capacity, "numStudents": c.numStudents, "teacher": c.teacher, "Time": c.Time} for c in Class.query.filter_by(teacher=teacher.username).all()]
+    classesList = [{"id": c.id, "name": c.name, "teacher": c.teacher, "Time": c.Time, "students": c.numStudents} for c in Class.query.filter_by(teacher=teacher.username).all()]
     return jsonify({"id": teacher.id, "username": teacher.username, "classes": classesList}), 200
 
 #get all students and grades for a particular class
@@ -323,7 +328,7 @@ def changeStudentGrade():
         return jsonify({'error': 'Enrollment not found'}), 404
 
     enrollment.grade = data['grade']
-    db.session.commit()
+    db.session.commit()    
     return jsonify({
           'student_id': student.id,
           'username': student.username,
