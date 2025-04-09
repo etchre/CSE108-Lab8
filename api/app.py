@@ -12,16 +12,24 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
 
-app = Flask(__name__, template_folder='template')
-#configure the app to work as a database
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite"
-#create the database
-db = SQLAlchemy(app)
+app = Flask(__name__)
+
 #change the app to work with jwt and create our totally
 #tubular secret key
-app.config["JWT_SECRET_KEY"] = "bananapudding" 
+app.config["JWT_SECRET_KEY"] = "bananapudding"
+# Here you can globally configure all the ways you want to allow JWTs to
+# be sent to your web application. By default, this will be only headers.
+app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies", "json", "query_string"]
+# If true this will only allow the cookies that contain your JWTs to be sent
+# over https. In production, this should always be set to True
+app.config["JWT_COOKIE_SECURE"] = False
+#configure the app to work as a database
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.sqlite"
+
+#create the database
+db = SQLAlchemy(app)
 jwt = JWTManager(app)
-CORS(app)
+cors = CORS(app, origins="*")
 
 # Instead of a simple association table, we now define an Enrollment model 
 # to allow storing a grade for each student's enrollment.
@@ -52,7 +60,7 @@ class User(db.Model):
     #our constructot
     def __init__(self, username, password, role):
          self.username = username
-         self.password = generate_password_hash(password, method='sha256')
+         self.password = generate_password_hash(password)
          self.role  = role
 
 #create for the class
@@ -106,7 +114,7 @@ def CreateStudentAccount():
               }), 201
 
 #
-@app.route('/students/login', methods=['POST'])
+@app.route('/student/login', methods=['POST'])
 def LoginStudent():
     #get the input if no input is requitrd throw and error
     data = request.get_json()
@@ -117,15 +125,15 @@ def LoginStudent():
     user = User.query.filter_by(username=data['username'], role="student").first()
     #check if the username and password is correct , if it is login
     if user and check_password_hash(user.password, data['password']):
-        Token = create_access_token(identity=user.id)
+        Token = create_access_token(identity=str(user.id))
         return jsonify({"Token": Token}), 200
     else:
        return jsonify({'error': 'Student not found'}), 404
 
-@app.route('/students/classes', methods=['GET'])
+@app.route('/student/classes', methods=['GET'])
 @jwt_required()
 def getStudentClasses():
-    userID = get_jwt_identity()
+    userID = int(get_jwt_identity())
     user = User.query.get(userID)
     #throw an error if user not found
     if not user:
@@ -211,7 +219,7 @@ def unenrollClass():
 def seaAllClasses():
     allClasses = Class.query.all()
     classes = [{"id": c.id, "name": c.name, "capacity": c.capacity, "numStudents": c.numStudents, "teacher": c.teacher, "Time": c.Time} for c in allClasses]
-    return jsonify(classes)
+    return jsonify({'classes': classes})
 
 #This is where the teacher part of the api is/will go
 #create a function so the teacher can create their account
@@ -249,7 +257,7 @@ def LoginTeacher():
     user = User.query.filter_by(username=data['username'], role="teacher").first()
     #check if the username and password is correct , if it is login
     if user and check_password_hash(user.password, data['password']):
-        Token = create_access_token(identity=user.id)
+        Token = create_access_token(identity=str(user.id))
         return jsonify({"Token": Token}), 200
     else:
        return jsonify({'error': 'Teacher not found'}), 404
@@ -258,7 +266,7 @@ def LoginTeacher():
 @app.route('/teacher/classes', methods=['GET'])
 @jwt_required()
 def getTeacherClasses():
-    userID = get_jwt_identity()
+    userID = int(get_jwt_identity())
     teacher = User.query.get(userID)
     #throw an error if user not found
     if not teacher or teacher.role != "teacher":

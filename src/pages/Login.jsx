@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
+import studentAPI from "../functions/studentAPI.js";
 
 
-function Login({ loggedIn, setLoggedIn }) {
+function Login({ loggedIn, setResponse }) {
   // initialize navigate function
   const navigate = useNavigate();
   const [isLoginView, setIsLoginView] = useState(true);
@@ -15,30 +16,30 @@ function Login({ loggedIn, setLoggedIn }) {
   const [newUsername, setNewUsername] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  // simulated token
-  const [token, setToken] = useState(null);
-
-  // added new state to track which role is selected
-  const [selectedRole, setSelectedRole] = useState(null);
-
   useEffect(() => {
     // if user already exists; redirect to dashboard
     if (loggedIn) {
       navigate("/dashboard");
     }
-  }, [loggedIn, token, navigate]);
+  }, [loggedIn, navigate]);
 
   const handleLogin = () => {
-    // simulated login
-    const simulatedToken = "dummy-token-123456";
-    localStorage.setItem("authToken", simulatedToken);
-    setToken(simulatedToken);
-    setLoggedIn(true);
+    studentAPI.login({
+      username: loginUsername,
+      password: loginPassword,
+      setResponse
+    });
   };
 
   const handleAccountCreation = () => {
+    let selectedRole = "none"
     console.log("Creating account with:", newUsername, newPassword, "Role:", selectedRole);
-    setSelectedRole(null);
+    studentAPI.createAccount({
+      username: newUsername,
+      password: newPassword,
+      setResponse
+    });
+
     setIsLoginView(true);
   };
 
