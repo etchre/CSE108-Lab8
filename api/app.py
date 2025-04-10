@@ -136,8 +136,26 @@ def index():
     return ""
 
 @app.route('/login', methods=['POST'])
-def login():
-    # Get the JSON data from the request
+def Login():
+    #get the JSON data
+    data = request.get_json()
+    #if there is no data or no input  retturn 400 error
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({'error': 'username and password are required'}), 400
+
+    #get the user by username
+    user = User.query.filter_by(username=data['username']).first()
+    #check if the username and password is correct , if it is login
+    if user and check_password_hash(user.password, data['password']):
+        Token = create_access_token(identity=str(user.id))
+        return jsonify({"Token": Token,"role":user.role}), 200
+    else:
+       return jsonify({'error': 'user not found'}), 404
+      
+#create a function so the student can create their account
+@app.route('/student/createaccount', methods=['POST'])
+def CreateStudentAccount():
+    #set our data to our
     data = request.get_json()
     if not data or 'username' not in data or 'password' not in data:
         return jsonify({'error': 'username and password are required'}), 400
@@ -254,7 +272,7 @@ def get_all_classes():
         "teacher": c.teacher,
         "time": c.time
     } for c in all_courses]
-    return jsonify(courses)
+    return jsonify({'classes': courses})
 
 @app.route('/teacher/createaccount', methods=['POST'])
 def create_teacher_account():
@@ -272,6 +290,7 @@ def create_teacher_account():
         return jsonify({'error': 'That teacher name already exists', 'detail': str(e)}), 400
     return jsonify({'id': new_user.id, 'username': new_user.username, 'role': new_user.role}), 201
 
+#get all classes associated with the teacher
 @app.route('/teacher/classes', methods=['GET'])
 @jwt_required()
 def get_teacher_classes():
@@ -285,6 +304,7 @@ def get_teacher_classes():
         "id": c.id,
         "className": c.className,
         "teacher": c.teacher,
+        "capacity": c.capacity,
         "time": c.time,
         "numStudents": c.numStudents
     } for c in Class.query.filter_by(teacher=teacher.username).all()]

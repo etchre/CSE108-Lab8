@@ -1,8 +1,9 @@
+import generalAPI from "./generalAPI.js";
+
 const studentURI = 'http://127.0.0.1:5000/student'
-const generalURI = 'http://127.0.0.1:5000/'
 
-function createAccount({username, password}) {
-  fetch(studentURI+'/createaccount',
+function createAccount({username, password, setResponse}) {
+  const promise = fetch(studentURI+'/createaccount',
     {
       method: 'POST',
       headers: {
@@ -15,70 +16,31 @@ function createAccount({username, password}) {
         }
       )
     }
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    console.log(data);
-  }).catch(err => {
-    console.log(err);
-  })
+  )
+
+  generalAPI.promiseCallback({promise, setResponse})
 }
 
-function login({username, password}) {
-  fetch(studentURI+'/login',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(
-        {
-          username: username,
-          password: password
-        }
-      )
-    }
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    console.log(data);
-  }).catch(err => {
-    console.log(err);
-  })
-}
-
-function getClasses({token}) {
-  fetch(studentURI+'/classes',
+function getClasses({token, setResponse}) {
+  const promise = fetch(studentURI+'/classes',
     {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,
       }
     }
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    console.log(data);
-  }).catch(err => {
-    console.log(err);
-  })
+  )
+
+  generalAPI.promiseCallback({promise, setResponse})
 }
 
-function enroll({token, classId}) {
-  fetch(studentURI+'/enroll',
+function enroll({token, classId, setResponse}) {
+  const promise = fetch(studentURI+'/enroll',
     {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(
         {
@@ -86,24 +48,18 @@ function enroll({token, classId}) {
         }
       )
     }
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    console.log(data);
-  }).catch(err => {
-    console.log(err);
-  })
+  )
+
+  generalAPI.promiseCallback({promise, setResponse})
 }
 
-function unenroll({token, classId}) {
-  fetch(studentURI+'/unenroll',
+function unenroll({token, classId, setResponse}) {
+  const promise = fetch(studentURI+'/unenroll',
     {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(
         {
@@ -111,16 +67,9 @@ function unenroll({token, classId}) {
         }
       )
     }
-  ).then(response => {
-    if (!response.ok) {
-      throw new Error("Response status: " + response.status + " " + response.statusText);
-    }
-    return response.json();
-  }).then(data => {
-    console.log(data);
-  }).catch(err => {
-    console.log(err);
-  })
+  )
+
+  generalAPI.promiseCallback({promise, setResponse})
 }
 
-export default {createAccount, login, getClasses, enroll, unenroll};
+export default {createAccount, getClasses, enroll, unenroll};

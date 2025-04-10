@@ -13,7 +13,8 @@ dist-ssr
 *.local
 .venv
 .venv/*
-api/instance/*
+# allow the sql database to be pushed to github
+#api/instance/*
 
 # Editor directories and files
 .vscode/*
