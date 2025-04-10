@@ -5,9 +5,9 @@ function CourseList({courses}) {
     <div>
       {courses.map((course, index) => {
         let courseData = [
-          course['name'],
+          course['className'],
           course['teacher'],
-          course['Time'],
+          course['time'],
           course['numStudents']+'/'+course['capacity']
         ]
 
@@ -15,7 +15,7 @@ function CourseList({courses}) {
           <CourseRow
             addons={['']}
             itemAddons={['bg-gray-400']}
-            key={course['name'] + index}
+            key={course['className'] + index}
             items={courseData}
           />
         )
