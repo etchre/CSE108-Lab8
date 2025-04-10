@@ -3,6 +3,8 @@ import {Routes, Route} from "react-router";
 import Login from "./pages/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import NotFound from "./pages/NotFound.jsx";
+import Debug from "./pages/Debug.jsx";
+import Admin from "./pages/admin.jsx"; // or AdminFrame
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -69,7 +71,9 @@ function App() {
             role={role}
           />
         } />
+        <Route path="/debug" element={<Debug />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/admin" element={<Admin/>} />
       </Routes>
     </div>
   )
