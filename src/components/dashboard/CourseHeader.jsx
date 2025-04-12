@@ -4,13 +4,13 @@ function CourseHeader() {
 
   const header = [
     'Course Name',
-    'Teacher',
+    'Instructor',
     'Time',
     'Students Enrolled'
   ]
 
   return (
-    <CourseRow addons={['bg-blue-400']} items={header} />
+    <CourseRow addons={['border-b border-white uppercase font-bold']} items={header} />
   )
 }
 

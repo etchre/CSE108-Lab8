@@ -10,11 +10,15 @@ function CourseView({courses, token, setResponse}) {
   }, [courses])
 
   return (
-    <div className="m-4">
+    <div className="max-w [1400px] mx-auto px-6 py-6 text-white h-full overflow-auto">
       <ViewSelector token={token} setResponse={setResponse} />
-      <div className="py-8 px-16 bg-blue-900 rounded-lg">
-        <CourseHeader />
-        <CourseList courses={courses} />
+      <h3 className="text-2xl font-bold mb-4">Course Details</h3>
+      {/* example table for courses */}
+      <div className="overflow-x-auto">
+          <div className="text-sm text-left w-full">
+          <CourseHeader />
+          <CourseList courses={courses} />
+        </div>
       </div>
     </div>
   )

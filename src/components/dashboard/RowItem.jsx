@@ -7,7 +7,7 @@ function RowItem({item, addons=[]}) {
   }
 
   return (
-    <div className={styleAddons+"mx-0.5 my-1 p-2 rounded-lg"}>
+    <div className={styleAddons+"px-4 py-2"}>
         {item}
     </div>
   )
