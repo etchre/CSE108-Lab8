@@ -19,9 +19,6 @@ function Dashboard({
 }) {
   const navigate = useNavigate();
 
-  // track the bottom panel’s open/close
-  const [isBottomPanelOpen, setIsBottomPanelOpen] = useState(true);
-
   useEffect(() => {
     if (!loggedIn) {
       navigate("/");
@@ -38,11 +35,6 @@ function Dashboard({
   useEffect(() => {
     console.log("Courses => ", courses);
   }, [courses]);
-
-  // toggle bottom panel
-  const toggleBottomPanel = () => {
-    setIsBottomPanelOpen((prev) => !prev);
-  };
 
   return (
     // navy background color (UCM color)
@@ -68,31 +60,14 @@ function Dashboard({
         <button className="hover:underline">Your Enrolled Courses</button>
       </nav>
 
-      <CourseSchedule />
-
-      {/* arrow up and down functionality */}
-      <button
-        onClick={toggleBottomPanel}
-        className="fixed bottom-4 left-1/2 transform -translate-x-1/2
-          bg-white text-[#003B5C] border border-gray-300 w-12 h-12 
-          rounded-full flex items-center justify-center shadow-md hover:shadow-lg z-50"
-      >
-        {isBottomPanelOpen ? "↓" : "↑"}
-      </button>
-      <div
-        className={`fixed left-0 w-full transition-all duration-300 z-40
-        ${isBottomPanelOpen ? "h-1/2" : "h-0 overflow-hidden"} 
-        bottom-0 bg-[#003B5C] rounded-t-xl shadow-xl border-t border-gray-200`}
-      >
-        {/* additional tables here (if needed) */}
-        {role === "student" ? (
-          <Student token={token} courses={courses} setResponse={setResponse} />
-        ) : role === "teacher" ? (
-          <Teacher token={token} courses={courses} setResponse={setResponse} />
-        ) : (
-          <div>Error</div>
-          )}
-      </div>
+      {/* additional tables here (if needed) */}
+      {role === "student" ? (
+        <Student token={token} courses={courses} setResponse={setResponse} />
+      ) : role === "teacher" ? (
+        <Teacher token={token} courses={courses} setResponse={setResponse} />
+      ) : (
+        <div>Error</div>
+        )}
     </div>
   );
 }
