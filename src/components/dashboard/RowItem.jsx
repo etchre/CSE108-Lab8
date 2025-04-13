@@ -1,4 +1,4 @@
-function RowItem({item, addons=[]}) {
+function RowItem({children, addons=['']}) {
   let styleAddons = ''
 
   for (const addon of addons) {
@@ -7,8 +7,8 @@ function RowItem({item, addons=[]}) {
   }
 
   return (
-    <div className={styleAddons+"mx-0.5 my-1 p-2 rounded-lg"}>
-        {item}
+    <div className={styleAddons+"px-4 py-2"}>
+        {children}
     </div>
   )
 }

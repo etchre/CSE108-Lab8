@@ -18,8 +18,6 @@ function App() {
   const [role, setRole] = useState(null);
 
   useEffect(() => {
-    //console.log(response)
-
     if(response['Token'] !== undefined) {
       setToken(response['Token'])
       setRole(response['role'])
@@ -36,12 +34,14 @@ function App() {
     }
   }, [response]);
 
+  //once role and token have been loaded, change the view to the dashboard
   useEffect(() => {
     if(role !== null && token !== null) {
       setLoggedIn(true)
     }
   }, [role, token])
 
+  //clear state when not logged in
   useEffect(() => {
     if(!loggedIn) {
       setToken(null)
@@ -60,7 +60,7 @@ function App() {
             setResponse={setResponse}
           />
         } />
-        <Route path="/dashboard" element={
+        <Route path="/dashboard/*" element={
           <Dashboard
             loggedIn={loggedIn}
             setLoggedIn={setLoggedIn}

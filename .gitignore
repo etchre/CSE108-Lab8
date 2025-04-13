@@ -14,7 +14,9 @@ dist-ssr
 .venv
 .venv/*
 # allow the sql database to be pushed to github
-#api/instance/*
+api/*
+!api/app.py
+
 
 # Editor directories and files
 .vscode/*

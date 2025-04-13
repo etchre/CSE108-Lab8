@@ -1,38 +1,21 @@
-import studentAPI from "../../functions/studentAPI.js";
-import generalAPI from "../../functions/generalAPI.js";
-import {useEffect, useState} from "react";
+import {NavLink} from "react-router";
 
-function ViewSelector({token, setResponse}) {
-
-  const [view, setView] = useState('user')
-
+//links is an array consisting of 2 element arrays
+function ViewSelector({links}) {
   return(
-    <div className="my-2 flex justify-center">
-      <div className="bg-blue-200 rounded-lg text-white flex flex-row p-1">
-        <button
-          className={
-            (view==='user'?'bg-blue-900':'')
-              +" rounded-lg py-2 px-4 cursor-pointer"
-          }
-          onClick={() => {
-            studentAPI.getClasses({token, setResponse})
-            setView('user')
-          }}
-        >
-          Your Courses
-        </button>
-        <button
-          className={
-            (view==='all'?'bg-blue-900':'')+" rounded-lg py-2 px-4 cursor-pointer"
-          }
-          onClick={() => {
-            generalAPI.seeAllCourses({setResponse})
-            setView('all')
-          }}
-        >
-          Add Courses
-        </button>
-      </div>
+    <div className="flex justify-center bg bg-[#FFD200] text-[#003B5C] font-semibold py-2 space-x-8">
+      {links.map((link, index) => {
+        return (
+          <NavLink
+            to={link[1]}
+            key={link+index}
+            className={({isActive}) => (isActive ? 'bg-white border-white' : 'border-[#FFD200]') + ' rounded-md py-0.5 px-1.5 border-2 hover:border-white'}
+            end
+          >
+            {link[0]}
+          </NavLink>
+        )
+      })}
     </div>
   )
 }
