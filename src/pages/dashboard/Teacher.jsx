@@ -4,7 +4,13 @@ import {Route, Routes} from "react-router";
 import TeacherCourseView from "../../components/dashboard/TeacherCourseView.jsx";
 import {useEffect, useState} from "react";
 
-function Teacher({token, courses, classInfo, setResponse}) {
+function Teacher({
+    token,
+    courses,
+    classInfo,
+    currentCourse,
+    setResponse
+}) {
   const [ids, setIds] = useState(courses.map(course => course['id']));
 
   useEffect(() => {
@@ -31,6 +37,7 @@ function Teacher({token, courses, classInfo, setResponse}) {
           <TeacherCourseView
             token={token}
             classInfo={classInfo}
+            currentCourse={currentCourse}
             setResponse={setResponse}
           />
         }/>

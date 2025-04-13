@@ -22,6 +22,7 @@ function App() {
 
   //exclusive state for teachers
   const [classInfo, setClassInfo] = useState([]);
+  const [currentCourse, setCurrentCourse] = useState(null);
 
   //handle side effects whenever a response from the api is received
   useEffect(() => {
@@ -54,7 +55,10 @@ function App() {
       }
     }
     if(response['students'] !== undefined) {
-      console.log(response['students'])
+      setClassInfo(response['students'])
+    }
+    if(response['className'] !== undefined) {
+      setCurrentCourse(response['className'])
     }
   }, [response]);
 
@@ -92,6 +96,8 @@ function App() {
             token={token}
             courses={courses}
             allCourses={allCourses}
+            classInfo={classInfo}
+            currentCourse={currentCourse}
             user={user}
             role={role}
           />
