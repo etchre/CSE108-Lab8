@@ -10,10 +10,8 @@ function CourseRow({items, addons=[], itemAddons=[]}) {
     styleAddons += ' '
   }
 
-  let gridStyle = 'grid-cols-'+items.length;
-
   return (
-    <div className={styleAddons+"w-full grid "+gridStyle}>
+    <div className={styleAddons+"w-full grid"}>
       {items.map((item, index) => {
         return <RowItem addons={itemAddons} key={index+item}>{item}</RowItem>
       })}
