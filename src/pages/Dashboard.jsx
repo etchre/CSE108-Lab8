@@ -28,18 +28,12 @@ function Dashboard({
       } else {
         teacherAPI.getClasses({ token, setResponse });
       }
-      // generalAPI.seeAllCourses({ setResponse })
     }
   }, [loggedIn, token, role, navigate, setResponse]);
-
-  useEffect(() => {
-    console.log("Courses => ", courses);
-  }, [courses]);
 
   return (
     // navy background color (UCM color)
     <div className="min-h-screen w-full bg-[#003B5C] relative overflow-x-hidden">
-
       {/* DashboardHeader */}
       {/**<DashboardHeader user={user} setLoggedIn={setLoggedIn} />*/}
 
@@ -51,14 +45,6 @@ function Dashboard({
           MERCED
         </h2>
       </header>
-
-      {/* gold navigation bar */}
-      <nav className="bg-[#FFD200] text-[#003B5C] font-semibold flex justify-center space-x-8 py-2 shadow-md">
-        <button className="hover:underline">Weekly Schedule</button>
-        <button className="hover:underline">Course Details</button>
-        <button className="hover:underline">Add Courses</button>
-        <button className="hover:underline">Your Enrolled Courses</button>
-      </nav>
 
       {/* additional tables here (if needed) */}
       {role === "student" ? (
