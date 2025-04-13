@@ -4,8 +4,9 @@ import CourseSchedule from "../../components/dashboard/CourseSchedule.jsx";
 import {useEffect, useState} from "react";
 import ViewSelector from "../../components/dashboard/ViewSelector.jsx";
 import {Route, Routes} from "react-router";
+import AddCourseView from "../../components/dashboard/AddCourseView.jsx";
 
-function Student({token, courses, setResponse}) {
+function Student({token, courses, allCourses, setResponse}) {
   return (
     <div>
       <ViewSelector
@@ -17,7 +18,11 @@ function Student({token, courses, setResponse}) {
       <Routes>
         <Route index element={<CourseSchedule />}/>
         <Route path="/add-courses" element={
-          <CourseView courses={courses} setResponse={setResponse} />
+          <AddCourseView
+            courses={courses}
+            allCourses={allCourses}
+            token={token}
+            setResponse={setResponse}/>
         } />
       </Routes>
       <BottomPanel>

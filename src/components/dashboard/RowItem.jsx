@@ -7,7 +7,7 @@ function RowItem({children, addons=['']}) {
   }
 
   return (
-    <div className={styleAddons+"px-4 py-2"}>
+    <div className={styleAddons+""}>
         {children}
     </div>
   )

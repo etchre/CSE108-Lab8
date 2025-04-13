@@ -13,9 +13,10 @@ dist-ssr
 *.local
 .venv
 .venv/*
-# allow the sql database to be pushed to github
-api/*
-!api/app.py
+
+.api/*
+api/instance/database.sqlite
+!.api/app.py
 
 
 # Editor directories and files

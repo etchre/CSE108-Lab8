@@ -23,7 +23,7 @@ function Login({ loggedIn, setResponse }) {
   useEffect(() => {
     // if user already exists; redirect to dashboard
     if (loggedIn) {
-      navigate("/dashboard");
+      navigate("/dashboard/");
     }
   }, [loggedIn, navigate]);
 

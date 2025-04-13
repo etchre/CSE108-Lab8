@@ -1,7 +1,8 @@
 import CourseRow from "./CourseRow.jsx";
 
 function CourseView({courses}) {
-  const gridColumns = 'grid-cols-4'
+  const gridColumns = 'grid-cols-4 w-full grid';
+  const itemStyle = 'px-4 py-2'
 
   return (
     <div className="px-6 py-6 text-white h-full overflow-auto">
@@ -10,15 +11,16 @@ function CourseView({courses}) {
           {/* header row */}
           <CourseRow
             addons={['border-b border-white uppercase font-bold', gridColumns]}
+            itemAddons={[itemStyle]}
             items={['Course Name','Instructor','Time','Students Enrolled']}
           />
-          <CourseList courses={courses} gridColumns={gridColumns} />
+          <CourseList courses={courses} gridColumns={gridColumns} itemStyle={itemStyle} />
         </div>
     </div>
   )
 }
 
-function CourseList ({courses, gridColumns}) {
+function CourseList ({courses, gridColumns, itemStyle}) {
   return(
       <div>
         {courses.map((course, index) => {
@@ -28,7 +30,7 @@ function CourseList ({courses, gridColumns}) {
           return(
             <CourseRow
               addons={['my-0.5','bg-[#00507C]',borderStyle, gridColumns]}
-              itemAddons={['']}
+              itemAddons={[itemStyle]}
               key={course['className'] + index}
               items={
                 [

@@ -7,6 +7,7 @@ import DashboardHeader from "../components/dashboard/DashboardHeader.jsx";
 import Student from "./dashboard/Student.jsx";
 import Teacher from "./dashboard/Teacher.jsx";
 import CourseSchedule from "../components/dashboard/CourseSchedule.jsx";
+import generalAPI from "../functions/generalAPI.js";
 
 function Dashboard({
   loggedIn,
@@ -14,6 +15,7 @@ function Dashboard({
   setResponse,
   token,
   courses,
+  allCourses,
   user,
   role
 }) {
@@ -25,6 +27,7 @@ function Dashboard({
     } else {
       if (role === "student") {
         studentAPI.getClasses({ token, setResponse });
+        generalAPI.seeAllCourses({ setResponse });
       } else {
         teacherAPI.getClasses({ token, setResponse });
       }
@@ -48,7 +51,12 @@ function Dashboard({
 
       {/* additional tables here (if needed) */}
       {role === "student" ? (
-        <Student token={token} courses={courses} setResponse={setResponse} />
+        <Student
+          token={token}
+          courses={courses}
+          allCourses={allCourses}
+          setResponse={setResponse}
+        />
       ) : role === "teacher" ? (
         <Teacher token={token} courses={courses} setResponse={setResponse} />
       ) : (

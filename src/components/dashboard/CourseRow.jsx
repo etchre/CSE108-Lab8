@@ -11,9 +11,9 @@ function CourseRow({items, addons=[], itemAddons=[]}) {
   }
 
   return (
-    <div className={styleAddons+"w-full grid"}>
+    <div className={styleAddons+""}>
       {items.map((item, index) => {
-        return <RowItem addons={itemAddons} key={index+item}>{item}</RowItem>
+        return <RowItem addons={itemAddons} key={item+index}>{item}</RowItem>
       })}
     </div>
   )
