@@ -48,7 +48,7 @@ function TeacherCourseView({
               <GradeInput
                 grade={item['grade']}
                 classID={current}
-                studentID={item['username']}
+                studentID={item['student_id']}
                 token={token}
                 setResponse={setResponse}
               />
