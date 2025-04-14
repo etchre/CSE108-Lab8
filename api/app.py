@@ -205,21 +205,6 @@ def Login():
        
 #create a function so the student can create their account
 @app.route('/student/createaccount', methods=['POST'])
-def CreateStudentAccount():
-    #set our data to our
-    data = request.get_json()
-    if not data or 'username' not in data or 'password' not in data:
-        return jsonify({'error': 'username and password are required'}), 400
-    # Retrieve the user by username
-    user = User.query.filter_by(username=data['username']).first()
-    # Verify the password
-    if user and check_password_hash(user.password, data['password']):
-        token = create_access_token(identity=user.id)
-        return jsonify({"Token": token, "role": user.role}), 200
-    else:
-        return jsonify({'error': 'user not found'}), 404
-
-@app.route('/student/createaccount', methods=['POST'])
 def create_student_account():
     # Get the JSON data from the request
     data = request.get_json()
