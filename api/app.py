@@ -248,6 +248,7 @@ def get_student_classes():
         "capacity": c.capacity,
         "numStudents": c.numStudents,
         "teacher_id": c.teacher_id,  # Updated to show teacher_id instead of teacher username
+        "teacher": User.query.get(c.teacher_id).username,
         "time": c.time
     } for c in user.courses]
     return jsonify({"id": user.id, "username": user.username, "classes": classes_list}), 200
@@ -319,6 +320,7 @@ def get_all_classes():
         "capacity": c.capacity,
         "numStudents": c.numStudents,
         "teacher_id": c.teacher_id,  # updated to show teacher_id
+        "teacher": User.query.get(c.teacher_id).username,
         "time": c.time
     } for c in all_courses]
     return jsonify({'classes': courses})
@@ -353,6 +355,7 @@ def get_teacher_classes():
         "id": c.id,
         "className": c.className,
         "teacher_id": c.teacher_id,  # updated to show teacher_id instead of teacher username
+        "teacher": User.query.get(c.teacher_id).username,
         "capacity": c.capacity,
         "time": c.time,
         "numStudents": c.numStudents
