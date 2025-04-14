@@ -30,8 +30,13 @@ function Dashboard({
       if (role === "student") {
         studentAPI.getClasses({ token, setResponse });
         generalAPI.seeAllCourses({ setResponse });
-      } else {
+      } else if(role === "teacher") {
         teacherAPI.getClasses({ token, setResponse });
+      } else if(role === "admin") {
+        navigate("/admin");
+        console.log('admin!')
+      } else {
+        navigate("/404")
       }
     }
   }, [loggedIn, token, role, navigate, setResponse]);
