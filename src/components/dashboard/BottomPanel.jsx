@@ -24,7 +24,7 @@ function BottomPanel({children}) {
       </button>
       <div
         className={`fixed left-0 w-full transition-all duration-300 z-40
-        ${isBottomPanelOpen ? "min:h-fit pb-16" : "h-0 overflow-hidden"} 
+        ${isBottomPanelOpen ? "min:h-fit pb-16 h-1/3" : "h-0 overflow-hidden"} 
         bottom-0 bg-[#003B5C] rounded-t-xl shadow-xl border-t border-gray-200`}
       >
         {children}
