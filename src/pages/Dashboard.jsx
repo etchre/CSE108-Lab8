@@ -15,6 +15,8 @@ function Dashboard({
   setResponse,
   token,
   courses,
+  classInfo,
+  currentCourse,
   allCourses,
   user,
   role
@@ -58,7 +60,13 @@ function Dashboard({
           setResponse={setResponse}
         />
       ) : role === "teacher" ? (
-        <Teacher token={token} courses={courses} setResponse={setResponse} />
+        <Teacher
+          token={token}
+          courses={courses}
+          classInfo={classInfo}
+          currentCourse={currentCourse}
+          setResponse={setResponse}
+        />
       ) : (
         <div>Error</div>
         )}

@@ -20,6 +20,10 @@ function App() {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
 
+  //exclusive state for teachers
+  const [classInfo, setClassInfo] = useState([]);
+  const [currentCourse, setCurrentCourse] = useState(null);
+
   //handle side effects whenever a response from the api is received
   useEffect(() => {
     if(response['Token'] !== undefined) {
@@ -49,6 +53,12 @@ function App() {
       if(response['message'] === 'you have unenrolled from the class') {
         studentAPI.getClasses({ token, setResponse });
       }
+    }
+    if(response['students'] !== undefined) {
+      setClassInfo(response['students'])
+    }
+    if(response['className'] !== undefined) {
+      setCurrentCourse(response['className'])
     }
   }, [response]);
 
@@ -86,6 +96,8 @@ function App() {
             token={token}
             courses={courses}
             allCourses={allCourses}
+            classInfo={classInfo}
+            currentCourse={currentCourse}
             user={user}
             role={role}
           />
