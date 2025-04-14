@@ -10,6 +10,9 @@ from flask_jwt_extended import (
 from flask_cors import CORS
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+from wtforms_sqlalchemy.fields import QuerySelectField
+from flask_admin.form import Select2Widget
+
 
 app = Flask(__name__)
 
@@ -90,15 +93,24 @@ class Class(db.Model):
     className = db.Column(db.String(100), unique=True, nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
     numStudents = db.Column(db.Integer, nullable=False, default=0)
-    teacher = db.Column(db.String(100), nullable=False)
+    # Instead of storing teacher as a string, we now store a teacher ID
+    # as requested. The teacher_id is a foreign key to the User model.
+    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    teacher = db.relationship("User", backref="teacher_classes")
     time = db.Column(db.String(100), nullable=False)
 
+    #our constructot
+    # Note: The parameter "teacher" is now expected to be the teacher's ID.
     def __init__(self, className, capacity, teacher, time):
         self.className = className
         self.capacity = capacity
         self.numStudents = 0
-        self.teacher = teacher
+        self.teacher= teacher  # Set teacher_id from the provided teacher value (should be an integer)
         self.time = time
+    @property
+    def teacher_username(self):
+        """Return the teacher's username if assigned, else None."""
+        return self.teacher.username if self.teacher else None
 
 # Flask-Admin views (JWT check temporarily bypassed for testing)
 class AdminModelView(ModelView):
@@ -108,7 +120,39 @@ class AdminModelView(ModelView):
 
     def inaccessible_callback(self, name, **kwargs):  # type: ignore[override]
         return jsonify({'error': 'access denied: not an admin'}), 400
+    
+    #create class model view because we want to query from id
+    #so i had to make a teacher id, using a foreign key for user id
+    #thus deleting the teacher from the original admin
+    #so recreate the custom view
+class ClassModelView(ModelView):
+    column_list = (
+        'className', 
+        'teacher_username', 
+        'capacity', 
+        'numStudents', 
+        'time'
+    )
+    form_excluded_columns = ['numStudents']  
+    # We no longer exclude teacher_id,
+    # but we rely on the relationship `teacher`.
 
+    # create a teacher column, to replace the deleted one
+    form_columns = ['className', 'teacher', 'capacity', 'time']
+    #adjust column names, don't like the way they look
+    
+    column_labels = {
+        'className': 'Class',
+        'teacher_username': 'Teacher',
+        'capacity': 'Capacity',
+        'numStudents': 'Num Students',
+        'time': 'Time'
+    }
+
+    
+    #add an extra field, this will allow us to see drop dow menu of users with a teacher role
+    form_extra_fields = {'teacher': QuerySelectField( 'Teacher',  query_factory=lambda: User.query.filter_by(role='teacher').all(),   get_label='username',  widget=Select2Widget())}
+#create a user view to hash the passswords for user
 class UserModelView(ModelView):
     def on_model_change(self, form, model, is_created):
         # If the password field in the form is provided, hash the new value.
@@ -120,10 +164,17 @@ class UserModelView(ModelView):
 class EnrollmentAdminView(ModelView):
     column_list = ('user', 'course', 'grade')
     form_columns = ('user', 'course', 'grade')
-
+    #add an extra vield, this will allow us to see drop dow menu of users with a student role
+    #and available classes
+    form_extra_fields = {'user': QuerySelectField('Student',query_factory=lambda: User.query.filter_by(role='student'), get_label='username',widget=Select2Widget()  ), 'course': QuerySelectField('Class',   query_factory=lambda: Class.query.all(),  get_label='className',widget=Select2Widget())}
+    #format the column to show us the exact user and exact class
+    column_formatters = {'user': lambda view, context, model, name: model.user.username if model.user else '','course': lambda view, context, model, name: model.course.className if model.course else ''
+    }
+#create the admin page
 admin = Admin(app, name='MyApp Admin', template_mode='bootstrap3')
+#add the custom views to the admin page
 admin.add_view(UserModelView(User, db.session))
-admin.add_view(AdminModelView(Class, db.session))
+admin.add_view(ClassModelView(Class, db.session))
 admin.add_view(EnrollmentAdminView(Enrollment, db.session))
 
 with app.app_context():
@@ -148,10 +199,10 @@ def Login():
     #check if the username and password is correct , if it is login
     if user and check_password_hash(user.password, data['password']):
         Token = create_access_token(identity=str(user.id))
-        return jsonify({"Token": Token,"role":user.role}), 200
+        return jsonify({"Token": Token, "role": user.role}), 200
     else:
        return jsonify({'error': 'user not found'}), 404
-      
+       
 #create a function so the student can create their account
 @app.route('/student/createaccount', methods=['POST'])
 def CreateStudentAccount():
@@ -198,7 +249,7 @@ def get_student_classes():
         "className": c.className,
         "capacity": c.capacity,
         "numStudents": c.numStudents,
-        "teacher": c.teacher,
+        "teacher_id": c.teacher_id,  # Updated to show teacher_id instead of teacher username
         "time": c.time
     } for c in user.courses]
     return jsonify({"id": user.id, "username": user.username, "classes": classes_list}), 200
@@ -269,7 +320,7 @@ def get_all_classes():
         "className": c.className,
         "capacity": c.capacity,
         "numStudents": c.numStudents,
-        "teacher": c.teacher,
+        "teacher_id": c.teacher_id,  # updated to show teacher_id
         "time": c.time
     } for c in all_courses]
     return jsonify({'classes': courses})
@@ -299,15 +350,15 @@ def get_teacher_classes():
     teacher = User.query.get(user_id)
     if not teacher or teacher.role != "teacher":
         return jsonify({'error': 'Teacher not found'}), 404
-    # Get classes taught by the teacher
+    # Get classes taught by the teacher (filter by teacher_id now)
     classes_list = [{
         "id": c.id,
         "className": c.className,
-        "teacher": c.teacher,
+        "teacher_id": c.teacher_id,  # updated to show teacher_id instead of teacher username
         "capacity": c.capacity,
         "time": c.time,
         "numStudents": c.numStudents
-    } for c in Class.query.filter_by(teacher=teacher.username).all()]
+    } for c in Class.query.filter_by(teacher_id=teacher.id).all()]
     return jsonify({"id": teacher.id, "username": teacher.username, "classes": classes_list}), 200
 
 @app.route('/teacher/class/<class_id>/students', methods=['GET'])
@@ -321,8 +372,8 @@ def get_teacher_class_info(class_id):
     course = Class.query.get(class_id)
     if not course:
         return jsonify({'error': 'Class not found'}), 404
-    # Ensure that the teacher is assigned to this class
-    if course.teacher != teacher.username:
+    # Ensure that the teacher is assigned to this class by checking teacher_id
+    if course.teacher_id != teacher.id:
         return jsonify({'error': 'Unauthorized'}), 403
     # Build the list of enrolled students with their grades
     teacher_class_info = []
@@ -346,16 +397,18 @@ def change_student_grade():
     if not teacher or teacher.role != "teacher":
         return jsonify({'error': 'Teacher not found'}), 404
     data = request.get_json()
-    if not data or 'classId' not in data or 'student' not in data or 'grade' not in data:
-        return jsonify({'error': 'classId, student, and grade are required'}), 400
+    # Require classId, studentId, and grade (changed from 'student' to 'studentId')
+    if not data or 'classId' not in data or 'studentId' not in data or 'grade' not in data:
+        return jsonify({'error': 'classId, studentId, and grade are required'}), 400
     course = Class.query.get(data['classId'])
     if not course:
         return jsonify({'error': 'Class not found'}), 404
-    # Ensure the teacher is assigned to the class
-    if course.teacher != teacher.username:
+    # Ensure the teacher is assigned to the class by checking teacher_id
+    if course.teacher_id != teacher.id:
         return jsonify({'error': 'Unauthorized'}), 403
-    student = User.query.filter_by(username=data['student'], role="student").first()
-    if not student:
+    # Query the student by their ID now
+    student = User.query.get(data['studentId'])
+    if not student or student.role != "student":
         return jsonify({'error': 'Student not found'}), 404
     enrollment = Enrollment.query.filter_by(user_id=student.id, class_id=course.id).first()
     if not enrollment:
