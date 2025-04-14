@@ -8,7 +8,7 @@ from flask_jwt_extended import (
     JWTManager, create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request
 )
 from flask_cors import CORS
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from wtforms_sqlalchemy.fields import QuerySelectField
 from flask_admin.form import Select2Widget
@@ -112,14 +112,27 @@ class Class(db.Model):
         """Return the teacher's username if assigned, else None."""
         return self.teacher.username if self.teacher else None
 
-# Flask-Admin views (JWT check temporarily bypassed for testing)
-class AdminModelView(ModelView):
-    def is_accessible(self):  # type: ignore[override]
-        # Temporarily bypass JWT check for testing
-        return True
+# Custom Admin Index View that secures the dashboard index page so only admin users can access it.
+class SecureAdminIndexView(AdminIndexView):
+    # This method determines if the current user is allowed to access the admin dashboard
+    def is_accessible(self):
+        try:
+            # First, verify the JWT from the request (checks headers, cookies, etc.)
+            verify_jwt_in_request()
+            # Retrieve the user ID from the JWT token
+            user_id = get_jwt_identity()
+            # Query the database for the user using that ID (assumes User is defined in your models)
+            user = User.query.get(user_id)
+            # Allow access only if a user exists and has the 'admin' role
+            return user is not None and user.role == "admin"
+        except:
+            # If verification fails or any exception occurs, do not allow access
+            return False
 
-    def inaccessible_callback(self, name, **kwargs):  # type: ignore[override]
-        return jsonify({'error': 'access denied: not an admin'}), 400
+    # This method is triggered if the user is not allowed access
+    def inaccessible_callback(self, name, **kwargs):
+        # Return a JSON error message with a 403 Forbidden status code
+        return jsonify({'error': 'denied!'}), 403
     
     #create class model view because we want to query from id
     #so i had to make a teacher id, using a foreign key for user id
@@ -171,7 +184,7 @@ class EnrollmentAdminView(ModelView):
     column_formatters = {'user': lambda view, context, model, name: model.user.username if model.user else '','course': lambda view, context, model, name: model.course.className if model.course else ''
     }
 #create the admin page
-admin = Admin(app, name='MyApp Admin', template_mode='bootstrap3')
+admin = Admin(app, name='MyApp Admin', template_mode='bootstrap3',index_view=SecureAdminIndexView())
 #add the custom views to the admin page
 admin.add_view(UserModelView(User, db.session))
 admin.add_view(ClassModelView(Class, db.session))
