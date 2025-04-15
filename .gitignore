@@ -14,7 +14,8 @@ dist-ssr
 .venv
 .venv/*
 
-.api/*
+api/*
+api/instance/*
 api/instance/database.sqlite
 !.api/app.py
 

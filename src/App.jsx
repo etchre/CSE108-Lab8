@@ -5,7 +5,6 @@ import Dashboard from "./pages/Dashboard.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Debug from "./pages/Debug.jsx";
 import Admin from "./pages/admin.jsx";
-import student from "./pages/dashboard/Student.jsx";
 import studentAPI from "./functions/studentAPI.js"; // or AdminFrame
 
 function App() {
@@ -22,10 +21,11 @@ function App() {
 
   //exclusive state for teachers
   const [classInfo, setClassInfo] = useState([]);
-  const [currentCourse, setCurrentCourse] = useState(null);
+  const [currentCourse, setCurrentCourse] = useState('err-null');
 
   //handle side effects whenever a response from the api is received
   useEffect(() => {
+    console.log(response)
     if(response['Token'] !== undefined) {
       setToken(response['Token'])
       if(response['role'] !== undefined) {
@@ -104,7 +104,9 @@ function App() {
         } />
         <Route path="/debug" element={<Debug />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="/admin" element={<Admin/>} />
+        <Route path="/admin" element={
+          <Admin token={token} />
+        } />
       </Routes>
     </div>
   )

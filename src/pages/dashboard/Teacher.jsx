@@ -12,9 +12,13 @@ function Teacher({
     setResponse
 }) {
   const [ids, setIds] = useState(courses.map(course => course['id']));
+  const [tags, setTags] = useState(courses.map(
+    course => course['className'].split('-')[0]
+  ));
 
   useEffect(() => {
     setIds(courses.map(course => course['id']));
+    setTags(courses.map(course => course['className'].split('-')[0]));
   }, [courses])
 
   return (
@@ -22,26 +26,28 @@ function Teacher({
       <ViewSelector
         links = {
         [['Your Courses', '/dashboard/']].concat(ids.map(
-          id => [id, '/dashboard/course/'+id]
+          (id,index) => [tags[index], '/dashboard/course/'+id]
         ))
       }
       />
-      <Routes>
-        <Route index element={
-          <CourseView
-            token={token}
-            courses={courses}
-            setResponse={setResponse}/>
-        }/>
-        <Route path='/course/:classID' element={
-          <TeacherCourseView
-            token={token}
-            classInfo={classInfo}
-            currentCourse={currentCourse}
-            setResponse={setResponse}
-          />
-        }/>
-      </Routes>
+      <div className='flex justify-center'>
+        <Routes>
+          <Route index element={
+            <CourseView
+              token={token}
+              courses={courses}
+              setResponse={setResponse}/>
+          }/>
+          <Route path='/course/:classID' element={
+            <TeacherCourseView
+              token={token}
+              classInfo={classInfo}
+              currentCourse={currentCourse}
+              setResponse={setResponse}
+            />
+          }/>
+        </Routes>
+      </div>
     </div>
   )
 }

@@ -58,7 +58,7 @@ function changeGrade({token, classId, student, grade, setResponse}) {
       body: JSON.stringify(
         {
           classId: classId,
-          student: student,
+          studentId: student,
           grade: grade,
         }
       )

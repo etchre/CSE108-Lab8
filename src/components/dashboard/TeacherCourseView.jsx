@@ -28,9 +28,9 @@ function TeacherCourseView({
   }, [current])
 
   return (
-    <div className='text-white p-6 text-sm'>
+    <div className='text-white p-6 text-sm w-5xl'>
       <h3 className="text-2xl font-bold mb-4">
-        {currentCourse}
+        {currentCourse.split('-')[1]}
       </h3>
       <CourseRow
         addons={['border-b border-white uppercase font-bold']}
@@ -48,7 +48,7 @@ function TeacherCourseView({
               <GradeInput
                 grade={item['grade']}
                 classID={current}
-                studentID={item['username']}
+                studentID={item['student_id']}
                 token={token}
                 setResponse={setResponse}
               />

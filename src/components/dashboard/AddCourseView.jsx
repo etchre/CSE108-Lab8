@@ -10,7 +10,7 @@ function AddCourseView({courses, allCourses, token, setResponse}) {
   }, [courses])
 
   return (
-    <div>
+    <div className='w-7xl mx-8 px-6 py-2'>
       {allCourses.map((course, index) => {
         return (
           <div
@@ -18,15 +18,23 @@ function AddCourseView({courses, allCourses, token, setResponse}) {
             key={'all'+course['className']+index}
           >
             <div>
-              <p className='font-bold text-lg'>{course['className']}</p>
-              <p className='text-sm text-gray-600'>{course['teacher']+' - Time '+ course['time']}</p>
+              <p className='font-bold text-lg'>
+                {course['className'].split('-')[0]}: {course['className'].split('-')[1]}
+              </p>
+              <p className='text-sm text-gray-600'>{course['teacher']+' - Time: '+ course['time']}</p>
             </div>
-            <EnrollButton
-              token={token}
-              id={course['id']}
-              setResponse={setResponse}
-              enrolled={ids.includes(course['id'])}
-            />
+            <div className='flex justify-end items-center'>
+              <div className='px-3 text-md'>
+                Capacity: {course['numStudents']}/{course['capacity']}
+              </div>
+              <EnrollButton
+                token={token}
+                id={course['id']}
+                setResponse={setResponse}
+                enrolled={ids.includes(course['id'])}
+                full={course['numStudents']>=course['capacity']}
+              />
+            </div>
           </div>
         )
       })}
