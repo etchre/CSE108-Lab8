@@ -280,7 +280,7 @@ def enroll_in_class():
         enrollment = Enrollment(user_id=user.id, class_id=course.id, grade=0)
         db.session.add(enrollment)
     # Increment the number of enrolled students
-    course.numStudents += 1
+    course.numStudents = len(course.enrollments)
     db.session.commit()
     return jsonify({'message': 'you have enrolled in the class'}), 200
 
@@ -306,8 +306,7 @@ def unenroll_class():
         db.session.delete(enrollment)
     # Remove the class from the student's list and decrement enrollment count
     user.courses.remove(course)
-    if course.numStudents > 0:
-        course.numStudents -= 1
+    course.numStudents = len(course.enrollments)
     db.session.commit()
     return jsonify({'message': 'you have unenrolled from the class'}), 200
 
@@ -379,6 +378,7 @@ def get_teacher_class_info(class_id):
     # Build the list of enrolled students with their grades
     teacher_class_info = []
     for enrollment in course.enrollments:
+        print(enrollment)
         student = User.query.get(enrollment.user_id)
         if not student:
             continue
