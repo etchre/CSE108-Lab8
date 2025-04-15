@@ -3,6 +3,7 @@ import traceback
 from flask import Flask, jsonify, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql.functions import user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import (
     JWTManager, create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request
@@ -263,15 +264,27 @@ def enroll_in_class():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     course = Class.query.get(data['classId'])
+
+    #pretend that the student is enrolled
+    course.numStudents += 1
+
+    #we will decrement the counter if there is an issue
+    # Check if the class is full
+    if course.numStudents >= course.capacity:
+        course.numStudents -= 1
+        db.session.commit()
+        return jsonify({'error': 'Class is full'}), 400
     # Validate that both user and class exist
     if not user or not course:
+        course.numStudents -= 1
+        db.session.commit()
         return jsonify({'error': 'User or class not found'}), 404
     # Check if the student is already enrolled
     if course in user.courses:
+        course.numStudents -= 1
+        db.session.commit()
         return jsonify({'error': 'Student is in the class already'}), 400
-    # Check if the class is full
-    if course.numStudents >= course.capacity:
-        return jsonify({'error': 'Class is full'}), 400
+
     # Enroll the student in the class
     user.courses.append(course)
     # Create an Enrollment record if one doesn't exist
@@ -279,7 +292,8 @@ def enroll_in_class():
     if not enrollment:
         enrollment = Enrollment(user_id=user.id, class_id=course.id, grade=0)
         db.session.add(enrollment)
-    # Increment the number of enrolled students
+
+    # match the number of enrolled students to the amount of actual enrollments
     course.numStudents = len(course.enrollments)
     db.session.commit()
     return jsonify({'message': 'you have enrolled in the class'}), 200

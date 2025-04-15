@@ -90,19 +90,19 @@ const handleTeacherLogin = (data) => {
 //   })
 // })
 
-// for(let i= 300; i < 400; i++) {
-//   generalAPI.login({
-//     username: users[i].name,
-//     password: users[i].password,
-//     setResponse: handleLogin
-//   })
-// }
+for(let i= 200; i < 300; i++) {
+  generalAPI.login({
+    username: users[i].name,
+    password: users[i].password,
+    setResponse: handleLogin
+  })
+}
 
-generalAPI.login({
-  username: 'Rosemarie Bongers',
-  password:'bo12',
-  setResponse: handleTeacherLogin
-})
+// generalAPI.login({
+//   username: 'Rosemarie Bongers',
+//   password:'bo12',
+//   setResponse: handleTeacherLogin
+// })
 
 
 
