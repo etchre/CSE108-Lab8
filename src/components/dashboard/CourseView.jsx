@@ -2,7 +2,7 @@ import CourseRow from "./CourseRow.jsx";
 
 function CourseView({courses}) {
   return (
-    <div className="px-6 py-6 text-white h-full overflow-auto">
+    <div className="px-6 py-6 text-white h-full overflow-auto w-7xl">
       <h3 className="text-2xl font-bold mb-4">Course Details</h3>
         <div className="text-sm text-left w-full">
           {/* header row */}

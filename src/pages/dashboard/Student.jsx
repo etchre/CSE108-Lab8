@@ -11,23 +11,28 @@ function Student({token, courses, allCourses, setResponse}) {
     <div>
       <ViewSelector
         links = {[
-          ['Weekly Schedule', '/dashboard/'],
+          ['Your Courses', '/dashboard/'],
           ['Add Courses', '/dashboard/add-courses'],
         ]}
       />
-      <Routes>
-        <Route index element={<CourseSchedule />}/>
-        <Route path="/add-courses" element={
-          <AddCourseView
-            courses={courses}
-            allCourses={allCourses}
-            token={token}
-            setResponse={setResponse}/>
-        } />
-      </Routes>
-      <BottomPanel>
-        <CourseView courses={courses} token={token} setResponse={setResponse} />
-      </BottomPanel>
+      <div className='flex justify-center'>
+        <Routes>
+          <Route index element={
+            <CourseView
+              courses={courses}
+              token={token}
+              setResponse={setResponse}
+            />
+          }/>
+          <Route path="/add-courses" element={
+            <AddCourseView
+              courses={courses}
+              allCourses={allCourses}
+              token={token}
+              setResponse={setResponse}/>
+          } />
+        </Routes>
+      </div>
     </div>
   )
 }

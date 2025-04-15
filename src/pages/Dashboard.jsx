@@ -44,17 +44,7 @@ function Dashboard({
   return (
     // navy background color (UCM color)
     <div className="min-h-screen w-full bg-[#003B5C] relative overflow-x-hidden">
-      {/* DashboardHeader */}
-      {/**<DashboardHeader user={user} setLoggedIn={setLoggedIn} />*/}
-
-      <header className="bg-white text-center pt-4 pb-2">
-        <h1 className="text-[#003B5C] font-bold text-2xl tracking-wide">
-          UNIVERSITY OF CALIFORNIA
-        </h1>
-        <h2 className="text-[#003B5C] font-extrabold text-4xl tracking-widest">
-          MERCED
-        </h2>
-      </header>
+      <DashboardHeader user={user} setLoggedIn={setLoggedIn} />
 
       {/* additional tables here (if needed) */}
       {role === "student" ? (

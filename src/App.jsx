@@ -21,10 +21,11 @@ function App() {
 
   //exclusive state for teachers
   const [classInfo, setClassInfo] = useState([]);
-  const [currentCourse, setCurrentCourse] = useState(null);
+  const [currentCourse, setCurrentCourse] = useState('err-null');
 
   //handle side effects whenever a response from the api is received
   useEffect(() => {
+    console.log(response)
     if(response['Token'] !== undefined) {
       setToken(response['Token'])
       if(response['role'] !== undefined) {
