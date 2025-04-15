@@ -40,6 +40,7 @@ function GradeInput({
         name='grade'
         type='text'
         placeholder={grade}
+        className='border-1 rounded-lg p-1 w-12'
       />
     </form>
   )

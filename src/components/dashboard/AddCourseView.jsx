@@ -21,7 +21,7 @@ function AddCourseView({courses, allCourses, token, setResponse}) {
               <p className='font-bold text-lg'>
                 {course['className'].split('-')[0]}: {course['className'].split('-')[1]}
               </p>
-              <p className='text-sm text-gray-600'>{course['teacher']+' - Time: '+ course['time']}</p>
+              <p className='text-sm text-gray-600'>{course['teacher']+' - '+ course['time']}</p>
             </div>
             <div className='flex justify-end items-center'>
               <div className='px-3 text-md'>

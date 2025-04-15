@@ -42,7 +42,7 @@ function TeacherCourseView({
         return (
           <CourseRow
             key={item['username']+item['grade']+index}
-            addons={['my-0.5','border-white bg-[#00507C]',borderStyle]}
+            addons={['my-0.5','border-white bg-[#00507C]',borderStyle,'items-center']}
             items={[
               item['username'],
               <GradeInput
