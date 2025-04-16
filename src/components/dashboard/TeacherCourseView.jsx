@@ -8,7 +8,10 @@ function TeacherCourseView({
     token,
     classInfo,
     currentCourse,
-    setResponse
+    setResponse,
+    setError,
+    gradeRefresh,
+    setGradeRefresh,
 }) {
   //class id is passed in through the url
   //params.classID
@@ -25,10 +28,11 @@ function TeacherCourseView({
       classId: current,
       setResponse
     })
-  }, [current])
+    setGradeRefresh(false)
+  }, [current,gradeRefresh])
 
   return (
-    <div className='text-white p-6 text-sm w-5xl'>
+    <div className='text-white p-6 text-md w-5xl'>
       <h3 className="text-2xl font-bold mb-4">
         {currentCourse.split('-')[1]}
       </h3>
@@ -39,10 +43,11 @@ function TeacherCourseView({
       {classInfo.map((item, index) => {
         //omit the bottom border on the last class in the list
         let borderStyle = index >= classInfo.length-1? '': 'border-b'
+        let borderColor = index%2 === 0 ? 'bg-[#00507C]': 'bg-[#196189]';
         return (
           <CourseRow
             key={item['username']+item['grade']+index}
-            addons={['my-0.5','border-white bg-[#00507C]',borderStyle]}
+            addons={['my-0.5','border-white ',borderColor,borderStyle,'items-center']}
             items={[
               item['username'],
               <GradeInput
@@ -51,6 +56,7 @@ function TeacherCourseView({
                 studentID={item['student_id']}
                 token={token}
                 setResponse={setResponse}
+                setError={setError}
               />
             ]}
           />)

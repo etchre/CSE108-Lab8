@@ -9,7 +9,10 @@ function Teacher({
     courses,
     classInfo,
     currentCourse,
-    setResponse
+    setResponse,
+    setError,
+    gradeRefresh,
+    setGradeRefresh,
 }) {
   const [ids, setIds] = useState(courses.map(course => course['id']));
   const [tags, setTags] = useState(courses.map(
@@ -44,6 +47,9 @@ function Teacher({
               classInfo={classInfo}
               currentCourse={currentCourse}
               setResponse={setResponse}
+              setError={setError}
+              gradeRefresh={gradeRefresh}
+              setGradeRefresh={setGradeRefresh}
             />
           }/>
         </Routes>
