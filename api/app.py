@@ -432,7 +432,6 @@ def change_student_grade():
     db.session.commit()
     return jsonify({
         'student_id': student.id,
-        'username': student.username,
         'class_id': course.id,
         'grade': enrollment.grade
     }), 200
