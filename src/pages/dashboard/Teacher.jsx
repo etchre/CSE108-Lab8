@@ -39,7 +39,9 @@ function Teacher({
             <CourseView
               token={token}
               courses={courses}
-              setResponse={setResponse}/>
+              setResponse={setResponse}
+              teacher={true}
+            />
           }/>
           <Route path='/course/:classID' element={
             <TeacherCourseView

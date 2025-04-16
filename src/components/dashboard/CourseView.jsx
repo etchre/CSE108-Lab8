@@ -1,6 +1,7 @@
 import CourseRow from "./CourseRow.jsx";
+import {NavLink} from "react-router";
 
-function CourseView({courses}) {
+function CourseView({courses, teacher=false}) {
   return (
     <div className="px-6 py-6 text-white h-full overflow-auto w-350">
       <h3 className="text-2xl font-bold mb-4">Course Details</h3>
@@ -10,13 +11,13 @@ function CourseView({courses}) {
             addons={['border-b border-white uppercase font-bold']}
             items={['Course Name','Subject','Instructor','Time','Students Enrolled']}
           />
-          <CourseList courses={courses} />
+          <CourseList courses={courses} teacher={teacher} />
         </div>
     </div>
   )
 }
 
-function CourseList ({courses}) {
+function CourseList ({courses, teacher}) {
   return(
       <div>
         {courses.map((course, index) => {
@@ -27,22 +28,45 @@ function CourseList ({courses}) {
           const courseDetails = course['className'].split('-')
           const courseTag = courseDetails[0]
           const courseName = courseDetails[1]
+          if(!teacher) {
+            return(
+              <CourseRow
+                addons={['my-0.5',borderColor,borderStyle]}
+                key={course['className'] + index}
+                items={
+                  [
+                    courseName,
+                    courseTag,
+                    course['teacher'],
+                    course['time'],
+                    course['numStudents']+'/'+course['capacity'],
+                  ]
+                }
+              />
+            )
+          } else {
+            return(
+              <CourseRow
+                addons={['my-0.5',borderColor,borderStyle]}
+                key={course['className'] + index}
+                items={
+                  [
+                    <NavLink
+                      to={"/dashboard/course/"+course['id']}
+                      className='text-blue-300 underline'
+                    >
+                      {courseName}
+                    </NavLink>,
+                    courseTag,
+                    course['teacher'],
+                    course['time'],
+                    course['numStudents']+'/'+course['capacity'],
+                  ]
+                }
+              />
+            )
+          }
 
-          return(
-            <CourseRow
-              addons={['my-0.5',borderColor,borderStyle]}
-              key={course['className'] + index}
-              items={
-                [
-                  courseName,
-                  courseTag,
-                  course['teacher'],
-                  course['time'],
-                  course['numStudents']+'/'+course['capacity'],
-                ]
-              }
-            />
-          )
         })}
       </div>
     );
