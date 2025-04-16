@@ -8,7 +8,8 @@ function TeacherCourseView({
     token,
     classInfo,
     currentCourse,
-    setResponse
+    setResponse,
+    setError
 }) {
   //class id is passed in through the url
   //params.classID
@@ -52,6 +53,7 @@ function TeacherCourseView({
                 studentID={item['student_id']}
                 token={token}
                 setResponse={setResponse}
+                setError={setError}
               />
             ]}
           />)

@@ -19,7 +19,8 @@ function Dashboard({
   currentCourse,
   allCourses,
   user,
-  role
+  role,
+  setError
 }) {
   const navigate = useNavigate();
 
@@ -61,6 +62,7 @@ function Dashboard({
           classInfo={classInfo}
           currentCourse={currentCourse}
           setResponse={setResponse}
+          setError={setError}
         />
       ) : (
         <div>Error</div>

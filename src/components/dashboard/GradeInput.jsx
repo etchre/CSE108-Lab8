@@ -6,7 +6,8 @@ function GradeInput({
     classID,
     studentID,
     token,
-    setResponse
+    setResponse,
+    setError
 }) {
   function handleSubmit(e) {
     e.preventDefault();
@@ -23,16 +24,16 @@ function GradeInput({
     let invalid = false;
 
     if(inputGrade.length <= 0){
-        console.log("grade is empty");
+        setError("grade is empty");
         invalid = true;
     }
 
     if(Number.isNaN(Number(inputGrade))) {
-        console.log("grade is not a number");
+        setError("grade is not a number");
         invalid = true;
     } else {
         if(Number(inputGrade) < 0 || Number(inputGrade) > 100) {
-            console.log("grade must be between 0 and 100");
+            setError("grade must be between 0 and 100");
             invalid = true;
         }
     }
