@@ -270,7 +270,7 @@ def enroll_in_class():
 
     #we will decrement the counter if there is an issue
     # Check if the class is full
-    if course.numStudents >= course.capacity:
+    if course.numStudents > course.capacity:
         course.numStudents -= 1
         db.session.commit()
         return jsonify({'error': 'Class is full'}), 400
