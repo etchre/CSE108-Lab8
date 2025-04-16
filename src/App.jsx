@@ -5,7 +5,8 @@ import Dashboard from "./pages/Dashboard.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Debug from "./pages/Debug.jsx";
 import Admin from "./pages/admin.jsx";
-import studentAPI from "./functions/studentAPI.js"; // or AdminFrame
+import studentAPI from "./functions/studentAPI.js";
+import generalAPI from "./functions/generalAPI.js"; // or AdminFrame
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -49,9 +50,11 @@ function App() {
     if(response['message'] !== undefined) {
       if(response['message'] === 'you have enrolled in the class' ) {
         studentAPI.getClasses({ token, setResponse });
+        generalAPI.seeAllCourses({ setResponse })
       }
       if(response['message'] === 'you have unenrolled from the class') {
         studentAPI.getClasses({ token, setResponse });
+        generalAPI.seeAllCourses({ setResponse })
       }
     }
     if(response['students'] !== undefined) {
