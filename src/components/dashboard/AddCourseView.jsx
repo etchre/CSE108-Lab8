@@ -1,6 +1,7 @@
 import studentAPI from "../../functions/studentAPI.js";
 import EnrollButton from "./EnrollButton.jsx";
 import {useEffect, useState} from "react";
+import CourseDays from "./CourseDays.jsx";
 
 function AddCourseView({courses, allCourses, token, setResponse}) {
   const [ids, setIds] = useState(courses.map(course => course['id']));
@@ -18,10 +19,13 @@ function AddCourseView({courses, allCourses, token, setResponse}) {
             key={'all'+course['className']+index}
           >
             <div>
-              <p className='font-bold text-lg'>
+              <div className='font-bold text-lg'>
                 {course['className'].split('-')[0]}: {course['className'].split('-')[1]}
-              </p>
-              <p className='text-sm text-gray-600'>{course['teacher']+' - '+ course['time']}</p>
+              </div>
+              <div className='flex text-sm text-gray-600 items-center'>
+                <CourseDays courseDays={course['time'].split(' ')[0]}/>
+                <div>{course['time'].split(' ').slice(1)}, {course['teacher']}</div>
+              </div>
             </div>
             <div className='flex justify-end items-center'>
               <div className='px-3 text-md'>
