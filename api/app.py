@@ -241,6 +241,12 @@ def get_student_classes():
         "teacher": User.query.get(c.teacher_id).username,
         "time": c.time
     } for c in user.courses]
+
+    all_courses = Class.query.all()
+    for c in all_courses:
+        c.numStudents = len(c.enrollments)
+        db.session.commit()
+
     return jsonify({"id": user.id, "username": user.username, "classes": classes_list}), 200
 
 @app.route('/student/enroll', methods=['POST'])
@@ -325,6 +331,11 @@ def get_all_classes():
         "teacher": User.query.get(c.teacher_id).username,
         "time": c.time
     } for c in all_courses]
+
+    for c in all_courses:
+        c.numStudents = len(c.enrollments)
+        db.session.commit()
+
     return jsonify({'classes': courses})
 
 @app.route('/teacher/createaccount', methods=['POST'])
@@ -362,6 +373,12 @@ def get_teacher_classes():
         "time": c.time,
         "numStudents": c.numStudents
     } for c in Class.query.filter_by(teacher_id=teacher.id).all()]
+
+    all_courses = Class.query.all()
+    for c in all_courses:
+        c.numStudents = len(c.enrollments)
+        db.session.commit()
+
     return jsonify({"id": teacher.id, "username": teacher.username, "classes": classes_list}), 200
 
 @app.route('/teacher/class/<class_id>/students', methods=['GET'])

@@ -45,7 +45,7 @@ function App() {
 
   //handle side effects whenever a response from the api is received
   useEffect(() => {
-    console.log(response)
+    //console.log(response)
     if(response['Token'] !== undefined) {
       setToken(response['Token'])
       if(response['role'] !== undefined) {
