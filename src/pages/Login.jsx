@@ -33,6 +33,8 @@ function Login({ loggedIn, setResponse }) {
       password: loginPassword,
       setResponse
     });
+
+    setLoginPassword('');
   };
 
   const handleAccountCreation = () => {
@@ -55,6 +57,8 @@ function Login({ loggedIn, setResponse }) {
 
     setSelectedRole(null)
     setIsLoginView(true);
+    setNewUsername("");
+    setNewPassword("");
   };
 
   return (
@@ -108,10 +112,7 @@ function Login({ loggedIn, setResponse }) {
             </button>
 
             {/* forgot password & create account */}
-            <div className="flex justify-between mt-4 text-sm">
-              <a href="#" className="text-blue-500 hover:underline">
-                Forgot Password?
-              </a>
+            <div className="flex justify-center mt-4 text-sm">
               <button
                 className="text-blue-500 hover:underline"
                 onClick={() => {
@@ -130,7 +131,7 @@ function Login({ loggedIn, setResponse }) {
             {selectedRole === null ? (
               <>
                 <div className="mb-4 text-center">
-                  <p className="mb-2 text-gray-700">Select account type:</p>
+                  <p className="mb-6 text-gray-700">Select account type:</p>
                   <div className="flex justify-around">
                     <button
                       className="bg-yellow-400 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-500"
@@ -143,12 +144,6 @@ function Login({ loggedIn, setResponse }) {
                       onClick={() => setSelectedRole("teacher")}
                     >
                       Teacher
-                    </button>
-                    <button
-                      className="bg-yellow-400 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-500"
-                      onClick={() => setSelectedRole("admin")}
-                    >
-                      Admin
                     </button>
                   </div>
                 </div>
