@@ -433,7 +433,8 @@ def change_student_grade():
     return jsonify({
         'student_id': student.id,
         'class_id': course.id,
-        'grade': enrollment.grade
+        'grade': enrollment.grade,
+        'message': 'grade changed'
     }), 200
 
 @app.route('/admin/createaccount', methods=['POST'])

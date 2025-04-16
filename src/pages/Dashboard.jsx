@@ -20,7 +20,9 @@ function Dashboard({
   allCourses,
   user,
   role,
-  setError
+  setError,
+  gradeRefresh,
+  setGradeRefresh,
 }) {
   const navigate = useNavigate();
 
@@ -63,6 +65,8 @@ function Dashboard({
           currentCourse={currentCourse}
           setResponse={setResponse}
           setError={setError}
+          gradeRefresh={gradeRefresh}
+          setGradeRefresh={setGradeRefresh}
         />
       ) : (
         <div>Error</div>

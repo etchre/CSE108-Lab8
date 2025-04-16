@@ -9,7 +9,9 @@ function TeacherCourseView({
     classInfo,
     currentCourse,
     setResponse,
-    setError
+    setError,
+    gradeRefresh,
+    setGradeRefresh,
 }) {
   //class id is passed in through the url
   //params.classID
@@ -26,7 +28,8 @@ function TeacherCourseView({
       classId: current,
       setResponse
     })
-  }, [current])
+    setGradeRefresh(false)
+  }, [current,gradeRefresh])
 
   return (
     <div className='text-white p-6 text-md w-5xl'>

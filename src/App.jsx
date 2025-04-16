@@ -24,6 +24,7 @@ function App() {
   //exclusive state for teachers
   const [classInfo, setClassInfo] = useState([]);
   const [currentCourse, setCurrentCourse] = useState('err-null');
+  const [gradeRefresh, setGradeRefresh] = useState(false);
 
   const fiveSeconds = 5000;
 
@@ -74,6 +75,9 @@ function App() {
         studentAPI.getClasses({ token, setResponse });
         generalAPI.seeAllCourses({ setResponse })
       }
+      if(response['message'] === 'grade changed' ) {
+        setGradeRefresh(true);
+      }
     }
     if(response['students'] !== undefined) {
       setClassInfo(response['students'])
@@ -122,6 +126,8 @@ function App() {
             user={user}
             role={role}
             setError={setError}
+            gradeRefresh={gradeRefresh}
+            setGradeRefresh={setGradeRefresh}
           />
         } />
         <Route path="/debug" element={<Debug />} />
